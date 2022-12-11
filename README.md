@@ -1,2 +1,2 @@
-# wafris_client
+# wafris-client
  
