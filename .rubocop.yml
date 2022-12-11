@@ -1,0 +1,115 @@
+require:
+  - rubocop-performance
+
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  TargetRubyVersion: 2.5
+  DisabledByDefault: true
+  NewCops: disable
+  Exclude:
+    - 'gemfiles/**/*'
+    - 'spec/dummy/bin/bundle'
+
+Bundler:
+  Enabled: true
+
+Gemspec:
+  Enabled: true
+
+Layout:
+  Enabled: true
+
+Layout/EmptyLinesAroundAttributeAccessor: # (0.83)
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator: # (0.82)
+  Enabled: true
+
+Layout/LineLength:
+  Max: 120
+
+Lint:
+  Enabled: true
+
+Lint/DeprecatedOpenSSLConstant: # (0.84)
+  Enabled: true
+
+Lint/RaiseException: # (0.81)
+  Enabled: true
+
+Lint/StructNewOverride: # (0.81)
+  Enabled: true
+
+Naming:
+  Enabled: true
+
+Performance:
+  Enabled: true
+
+Security:
+  Enabled: true
+
+Style/BlockDelimiters:
+  Enabled: true
+
+Style/ClassAndModuleChildren:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
+Style/ConditionalAssignment:
+  Enabled: true
+
+Style/Encoding:
+  Enabled: true
+
+Style/ExpandPathArguments:
+  Enabled: true
+
+Style/EmptyMethod:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/HashSyntax:
+  Enabled: true
+
+Style/MultilineTernaryOperator:
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Enabled: true
+
+Style/OptionalArguments:
+  Enabled: true
+
+Style/ParallelAssignment:
+  Enabled: true
+
+Style/RaiseArgs:
+  Enabled: true
+
+Style/RedundantBegin:
+  Enabled: true
+
+Style/RedundantFreeze:
+  Enabled: true
+
+Style/RedundantPercentQ:
+  Enabled: true
+
+Style/RedundantSelf:
+  Enabled: true
+
+Style/Semicolon:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: true
+
+Style/SpecialGlobalVars:
+  Enabled: true
