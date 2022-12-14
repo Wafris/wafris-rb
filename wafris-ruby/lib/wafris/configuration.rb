@@ -4,7 +4,7 @@ class Configuration
 
   include Singleton
 
-  attr_accessor :redis_connection, :pool_size, :enabled, :wafris_sha
+  attr_accessor :redis_connection, :redis_pool_size, :enabled, :wafris_sha
 
   def connection_pool
     
@@ -18,8 +18,13 @@ class Configuration
     @pool_size ||= 20
   end
 
-  def enabled?
-    redis_connection
+  # todo: figure out how to put a log message out if not enabled
+  def enabled
+    if redis_connection
+      return true
+    else
+      return false
+    end
   end
 
   def script_sha
@@ -35,6 +40,11 @@ class Configuration
   
     @wafris_sha ||= connection_pool.script(:load, wafris_core)
 
+  end
+
+  def reset
+    Configuration.instance.redis_connection = nil
+    Configuration.instance.redis_pool_size = 20 
   end
 
   def initialize
