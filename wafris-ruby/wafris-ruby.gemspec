@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-
-require File.expand_path('lib/wafris/version', __dir__)
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'wafris/version'
 
 Gem::Specification.new do |s|
   s.name = 'wafris'
