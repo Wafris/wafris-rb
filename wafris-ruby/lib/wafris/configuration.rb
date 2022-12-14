@@ -28,17 +28,16 @@ module Wafris
     end
 
     def script_sha
+      @script_sha ||= connection_pool.script(:load, wafris_core)
+    end
 
-      return @wafris_sha if @wafris_sha
-
-      wafris_core = File.read(
+    def wafris_core
+      File.read(
         File.join(
           File.dirname(__FILE__),
           'wafris_core.lua'
         )
       )
-      @wafris_sha ||= connection_pool.script(:load, wafris_core)
-
     end
 
     def reset
