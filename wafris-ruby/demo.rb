@@ -1,4 +1,6 @@
-require_relative 'lib/wafris-ruby'
+# frozen_string_literal: true
+
+require "wafris-ruby"
 
 Wafris.configuration do |c|
   puts "configuration"
