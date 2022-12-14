@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "wafris-ruby"
+require "wafris_ruby"
 
 Wafris.configuration do |c|
   puts "configuration"
