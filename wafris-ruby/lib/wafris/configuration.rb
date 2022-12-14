@@ -6,7 +6,7 @@ module Wafris
   class Configuration
     include Singleton
 
-    attr_accessor :redis_connection, :redis_pool_size, :enabled, :wafris_sha
+    attr_accessor :redis_connection, :redis_pool_size, :wafris_sha
 
     def connection_pool
       return @wafris_redis_pool if @wafris_redis_pool
