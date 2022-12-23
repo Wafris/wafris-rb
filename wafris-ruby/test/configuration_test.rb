@@ -20,8 +20,7 @@ module Wafris
       _(@configuration.redis_connection).wont_be_nil
     end
 
-    it "should default connection pool size" do 
-      
+    it "should default connection pool size" do
       _(@configuration.redis_pool_size).must_equal 20
     end
 
@@ -37,5 +36,4 @@ module Wafris
       _(@configuration.enabled?).must_equal true
     end
   end
-
 end
