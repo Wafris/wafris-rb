@@ -26,7 +26,7 @@ module Wafris
     end
 
     it "should not be enabled if no Redis connection" do 
-      _(@configuration.enabled).must_equal false
+      _(@configuration.enabled?).must_equal false
     end
 
     it "should be enabled if Redis connection exists" do
@@ -35,7 +35,7 @@ module Wafris
         c.redis_pool_size = 60 
       end
 
-      _(@configuration.enabled).must_equal true
+      _(@configuration.enabled?).must_equal true
     end
   end
 

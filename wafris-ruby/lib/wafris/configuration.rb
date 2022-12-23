@@ -19,12 +19,8 @@ module Wafris
     end
 
     # todo: figure out how to put a log message out if not enabled
-    def enabled
-      if redis_connection
-        return true
-      else
-        return false
-      end
+    def enabled?
+      !redis_connection.nil?
     end
 
     def script_sha

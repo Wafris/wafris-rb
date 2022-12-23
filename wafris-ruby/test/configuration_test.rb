@@ -25,17 +25,16 @@ module Wafris
       _(@configuration.redis_pool_size).must_equal 20
     end
 
-    it "should not be enabled if no Redis connection" do 
-      _(@configuration.enabled).must_equal false
+    it "should not be enabled if no Redis connection" do
+      _(@configuration.enabled?).must_equal false
     end
 
     it "should be enabled if Redis connection exists" do
       Wafris.configuration do |c|
         c.redis_connection = Redis.new
-        c.redis_pool_size = 60 
       end
 
-      _(@configuration.enabled).must_equal true
+      _(@configuration.enabled?).must_equal true
     end
   end
 
