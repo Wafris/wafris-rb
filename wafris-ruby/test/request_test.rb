@@ -20,20 +20,23 @@ module Wafris
       _(@configuration.redis_connection).wont_be_nil
     end
 
-    it "should default connection pool size" do
+    it "should default connection pool size" do 
+      
       _(@configuration.redis_pool_size).must_equal 20
     end
 
-    it "should not be enabled if no Redis connection" do
+    it "should not be enabled if no Redis connection" do 
       _(@configuration.enabled?).must_equal false
     end
 
     it "should be enabled if Redis connection exists" do
       Wafris.configuration do |c|
         c.redis_connection = Redis.new
+        c.redis_pool_size = 60 
       end
 
       _(@configuration.enabled?).must_equal true
     end
   end
+
 end

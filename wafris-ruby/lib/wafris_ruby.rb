@@ -8,7 +8,9 @@ module Wafris
   # Core logic for request block/allow determination
   class << self
     def configuration
-      yield Configuration.instance
+      yield Configuration.instance if block_given?
+
+      Configuration.instance
     end
 
     # ip: the IP of the client making the request, may be from x-forwarded-for
@@ -17,28 +19,24 @@ module Wafris
     # host: host (website/domain) making the request
     # time: UTC time of the request (from the logs to match things up)
 
-    def allow_request(ip:, user_agent:, path:, host:, time:)
-      if configuration.enabled?
-        configuration.connection_pool.with do |conn|
-          time = Time.now
-          status = conn.evalsha(
-            configuration.script_sha,
-            argv: [
-              request.ip,
-              IPAddr.new(request.ip).to_i,
-              time.to_i,
-              "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}"
-            ]
-          )
+    def allow_request?(request)
+      configuration.connection_pool.with do |conn|
+        time = Time.now
+        status = conn.evalsha(
+          configuration.script_sha,
+          argv: [
+            request.ip,
+            IPAddr.new(request.ip).to_i,
+            time.to_i,
+            "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}"
+          ]
+        )
 
-          if status.eql? 'Blocked'
-            return false
-          else
-            return true
-          end
+        if status.eql? 'Blocked'
+          return false
+        else
+          return true
         end
-      else
-        return true
       end
     end
   end

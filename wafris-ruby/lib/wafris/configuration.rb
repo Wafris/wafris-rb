@@ -6,29 +6,24 @@ module Wafris
   class Configuration
     include Singleton
 
-    attr_accessor :redis_connection, :redis_pool_size, :wafris_sha
+    attr_accessor :redis_connection, :redis_pool_size
 
-    def connection_pool
-      return @wafris_redis_pool if @wafris_redis_pool
-
-      @wafris_redis_pool = ConnectionPool.new(size: pool_size) { redis_connection }
+    def initialize
+      reset
     end
 
-    def pool_size
-      @pool_size ||= 20
+    def connection_pool
+      @connection_pool ||=
+        ConnectionPool.new(size: redis_pool_size) { redis_connection }
     end
 
     # todo: figure out how to put a log message out if not enabled
-    def enabled
-      if redis_connection
-        return true
-      else
-        return false
-      end
+    def enabled?
+      !redis_connection.nil?
     end
 
     def script_sha
-      @script_sha ||= connection_pool.script(:load, wafris_core)
+      @script_sha ||= redis_connection.script(:load, wafris_core)
     end
 
     def wafris_core
@@ -41,8 +36,8 @@ module Wafris
     end
 
     def reset
-      Configuration.instance.redis_connection = nil
-      Configuration.instance.redis_pool_size = 20
+      @redis_connection = nil
+      @redis_pool_size = 20
     end
   end
 end
