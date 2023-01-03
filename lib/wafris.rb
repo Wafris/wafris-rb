@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'wafris/configuration'
+require 'redis'
 require 'connection_pool'
 
 module Wafris
