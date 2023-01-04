@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'wafris_ruby'
-
 module Wafris
   class Middleware
     def initialize(app)

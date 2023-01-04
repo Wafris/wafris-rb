@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require 'wafris/configuration'
-require 'redis'
 require 'connection_pool'
+require 'redis'
+
+require 'wafris/configuration'
+require 'wafris/middleware'
 
 module Wafris
   class << self
