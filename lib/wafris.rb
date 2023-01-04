@@ -16,6 +16,10 @@ module Wafris
       @configuration ||= Wafris::Configuration.new
     end
 
+    def reset
+      @configuration = Wafris::Configuration.new
+    end
+
     # ip: the IP of the client making the request, may be from x-forwarded-for
     # user_agent: full user agent making the request
     # path: path including parameters of the request
