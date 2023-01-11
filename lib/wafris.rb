@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'connection_pool'
+require 'rails'
 require 'redis'
 
 require 'wafris/configuration'
 require 'wafris/middleware'
+
+require 'wafris/railtie' if defined?(Rails::Railtie)
 
 module Wafris
   class << self
