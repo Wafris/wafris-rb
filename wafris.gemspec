@@ -14,13 +14,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5'
 
-  s.add_runtime_dependency 'connection_pool'
-  s.add_runtime_dependency 'redis'
+  s.add_runtime_dependency 'connection_pool', '~> 2.3', '>= 2.3.0'
+  s.add_runtime_dependency 'rack', '~> 2.0'
+  s.add_runtime_dependency 'redis', '~> 4.8', '>= 4.8.0'
 
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rails'
-  s.add_development_dependency 'railties'
-  s.add_development_dependency 'rake'
+  s.add_development_dependency 'minitest', '~> 5.1'
+  s.add_development_dependency 'pry', '~> 0.14', '>= 0.14.1'
+  s.add_development_dependency 'rack-test', '~> 2.0', '>= 2.0.2'
+  s.add_development_dependency 'rails', '~> 7.0', '>= 7.0.4'
+  s.add_development_dependency 'railties', '~> 7.0', '>= 7.0.4'
+  s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
 end
