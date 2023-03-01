@@ -7,6 +7,9 @@ local unix_time = ARGV[3]
 local expire_time = unix_time - TWENTY_FOUR_HOURS
 local ip_request_string = "ip-requests-" .. ip
 local hour_bucket = ARGV[4]
+local user_agent_id = ARGV[5]
+local path_id = ARGV[6]
+local host_id = ARGV[7]
 
 -- LEADERBOARD DATA COLLECTION
 -- Add IP to last_requests_time key by integer timestamp
@@ -21,6 +24,13 @@ redis.call('LPUSH', ip_request_string, unix_time)
 -- Have the key expire in 24 hours
 -- EXPIRE ip-requests-192.168.1.1 86400
 redis.call('EXPIRE', ip_request_string, TWENTY_FOUR_HOURS)
+
+-- USER AGENT DATA COLLECTION
+-- Increment counter for user agent
+-- INC "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+if (user_agent_id ~= nil) then
+  redis.call('INCR', user_agent_id)
+end
 
 -- GRAPH DATA COLLECTION
 -- Increment counter for hourly buckets

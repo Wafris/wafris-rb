@@ -38,7 +38,10 @@ module Wafris
             request.ip,
             IPAddr.new(request.ip).to_i,
             time.to_i,
-            "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}"
+            "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}",
+            request.user_agent,
+            request.path,
+            request.host
           ]
         )
 
