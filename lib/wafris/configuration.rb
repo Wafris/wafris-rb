@@ -36,7 +36,7 @@ module Wafris
       File.read(
         File.join(
           File.dirname(__FILE__),
-          'wafris_core.lua'
+          '../lua/dist/wafris_core.lua'
         )
       )
     end
