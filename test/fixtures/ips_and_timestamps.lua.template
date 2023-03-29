@@ -1,0 +1,4 @@
+-- Template strings below are replaced with generated
+-- data from the ip_data_generator.rb script
+local ipArray = {IP_LIST}
+local timestampArray = {TIMESTAMP_LIST}
