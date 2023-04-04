@@ -31,14 +31,13 @@ module Wafris
 
     def allow_request?(request)
       configuration.connection_pool.with do |conn|
-        time = Time.now
+        time = Time.now.to_f * 1000
         status = conn.evalsha(
           configuration.script_sha,
           argv: [
             request.ip,
             IPAddr.new(request.ip).to_i,
-            time.to_i,
-            "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}"
+            time.to_i
           ]
         )
 
