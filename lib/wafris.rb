@@ -33,7 +33,7 @@ module Wafris
       configuration.connection_pool.with do |conn|
         time = Time.now.to_f * 1000
         status = conn.evalsha(
-          configuration.script_sha,
+          configuration.core_sha,
           argv: [
             request.ip,
             IPAddr.new(request.ip).to_i,
@@ -47,6 +47,21 @@ module Wafris
           return true
         end
       end
+    end
+
+    def request_buckets(_now)
+      graph_data = []
+      configuration.connection_pool.with do |conn|
+        time = Time.now.to_f * 1000
+        graph_data = conn.evalsha(
+          configuration.graph_sha,
+          argv: [
+            time.to_i
+          ]
+        )
+      end
+
+      return graph_data
     end
   end
 end

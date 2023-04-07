@@ -22,4 +22,13 @@ describe Wafris do
       _(Wafris.configuration.connection_pool.size).must_equal 20
     end
   end
+
+  describe '.request_buckets(time)' do
+    it 'returns an array of 24 time buckets and 24 request counts' do
+      now = Time.now
+      buckets = Wafris.request_buckets(now)
+
+      _(buckets.size).must_equal 48
+    end
+  end
 end
