@@ -63,5 +63,27 @@ module Wafris
 
       return graph_data
     end
+
+    def ips_with_num_requests
+      configuration.connection_pool.with do |conn|
+        return conn.zunion(
+          *leader_timebuckets,
+          0, -1, with_scores: true
+        )
+      end
+    end
+
+    private
+
+    def leader_timebuckets
+      timebuckets = []
+
+      time = Time.now.utc
+      24.times do |hours|
+        timebuckets << "ip-leader-sset:#{(time - 60 * 60 * hours).strftime("%Y-%m-%d-%H")}"
+      end
+
+      return timebuckets
+    end
   end
 end

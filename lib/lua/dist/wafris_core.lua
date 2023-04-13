@@ -59,6 +59,11 @@ local function add_to_HLL_request_count(timebucket, request_id)
   redis.call("PFADD", "unique-requests:" .. timebucket, request_id)
 end
 
+-- For: Leaderboard of IPs with Request count as score
+local function increment_timebucket_for_ip(timebucket, ip)
+  redis.call("ZINCRBY", "ip-leader-sset:" .. timebucket, 1, ip)
+end
+
 -- Configuration
 local max_requests = 100000
 local max_requests_per_ip = 10000
@@ -72,10 +77,11 @@ local unix_time = ARGV[3] / 1000
 local expire_time = unix_time - TWENTY_FOUR_HOURS
 local ip_request_string = "ip-requests-" .. ip
 
+-- Initialize local variables
 local request_id = get_request_id(nil, ip, max_requests)
+local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds)
 
 -- GRAPH DATA COLLECTION
-local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds)
 add_to_HLL_request_count(current_timebucket, request_id)
 
 -- LEADERBOARD DATA COLLECTION
@@ -91,6 +97,10 @@ redis.call("LPUSH", ip_request_string, unix_time)
 -- Have the key expire in 24 hours
 -- EXPIRE ip-requests-192.168.1.1 86400
 redis.call("EXPIRE", ip_request_string, TWENTY_FOUR_HOURS)
+-- For: Leaderboard of IPs with Request count as score
+local ip_leaderboard_sset_key = "ip-leader-sset:" .. current_timebucket
+redis.call("ZINCRBY", ip_leaderboard_sset_key, 1, ip)
+increment_timebucket_for_ip(current_timebucket, ip)
 
 -- BLOCKING LOGIC
 -- Safelist Range Check
