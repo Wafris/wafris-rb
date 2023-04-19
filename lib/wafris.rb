@@ -31,14 +31,13 @@ module Wafris
 
     def allow_request?(request)
       configuration.connection_pool.with do |conn|
-        time = Time.now
+        time = Time.now.to_f * 1000
         status = conn.evalsha(
-          configuration.script_sha,
+          configuration.core_sha,
           argv: [
             request.ip,
             IPAddr.new(request.ip).to_i,
-            time.to_i,
-            "all-ips:#{time.strftime('%Y-%m-%d')}:#{time.hour}"
+            time.to_i
           ]
         )
 
@@ -48,6 +47,43 @@ module Wafris
           return true
         end
       end
+    end
+
+    def request_buckets(_now)
+      graph_data = []
+      configuration.connection_pool.with do |conn|
+        time = Time.now.to_f * 1000
+        graph_data = conn.evalsha(
+          configuration.graph_sha,
+          argv: [
+            time.to_i
+          ]
+        )
+      end
+
+      return graph_data
+    end
+
+    def ips_with_num_requests
+      configuration.connection_pool.with do |conn|
+        return conn.zunion(
+          *leader_timebuckets,
+          0, -1, with_scores: true
+        )
+      end
+    end
+
+    private
+
+    def leader_timebuckets
+      timebuckets = []
+
+      time = Time.now.utc
+      24.times do |hours|
+        timebuckets << "ip-leader-sset:#{(time - 60 * 60 * hours).strftime("%Y-%m-%d-%H")}"
+      end
+
+      return timebuckets
     end
   end
 end
