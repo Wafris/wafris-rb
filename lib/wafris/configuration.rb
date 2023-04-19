@@ -28,15 +28,29 @@ module Wafris
       CONNECTION_ERROR
     end
 
-    def script_sha
-      @script_sha ||= redis.script(:load, wafris_core)
+    def core_sha
+      @core_sha ||= redis.script(:load, wafris_core)
     end
 
     def wafris_core
+      read_lua_dist("wafris_core")
+    end
+
+    def graph_sha
+      @graph_sha ||= redis.script(:load, wafris_graph)
+    end
+
+    def wafris_graph
+      read_lua_dist("get_graph_data")
+    end
+
+    private
+
+    def read_lua_dist(filename)
       File.read(
         File.join(
           File.dirname(__FILE__),
-          'wafris_core.lua'
+          "../lua/dist/#{filename}.lua"
         )
       )
     end
