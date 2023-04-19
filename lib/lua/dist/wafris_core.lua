@@ -67,15 +67,11 @@ end
 -- Configuration
 local max_requests = 100000
 local max_requests_per_ip = 10000
-local LAST_REQUESTS_TIME = "last_requests_time"
-local TWENTY_FOUR_HOURS = 86400
 
 local ip = ARGV[1]
 local ip_to_decimal = ARGV[2]
 local unix_time_milliseconds = ARGV[3]
 local unix_time = ARGV[3] / 1000
-local expire_time = unix_time - TWENTY_FOUR_HOURS
-local ip_request_string = "ip-requests-" .. ip
 
 -- Initialize local variables
 local request_id = get_request_id(nil, ip, max_requests)
@@ -85,21 +81,6 @@ local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds
 add_to_HLL_request_count(current_timebucket, request_id)
 
 -- LEADERBOARD DATA COLLECTION
--- Add IP to last_requests_time key by integer timestamp
--- ZADD last_requets_time 1661356145 '192.168.1.1'
-redis.call("ZADD", LAST_REQUESTS_TIME, unix_time, ip)
--- Remove IP from last_requests_time if it has been there for 24 hours
--- ZREMRANGEBYSCORE last_requests_time 0 (1661356145 - 86400)
-redis.call("ZREMRANGEBYSCORE", LAST_REQUESTS_TIME, 0, expire_time)
--- Add IP to ip-requests-<ip> for leaderboard tracking
--- LPUSH ip-requests-192.168.1.1 1661356145
-redis.call("LPUSH", ip_request_string, unix_time)
--- Have the key expire in 24 hours
--- EXPIRE ip-requests-192.168.1.1 86400
-redis.call("EXPIRE", ip_request_string, TWENTY_FOUR_HOURS)
--- For: Leaderboard of IPs with Request count as score
-local ip_leaderboard_sset_key = "ip-leader-sset:" .. current_timebucket
-redis.call("ZINCRBY", ip_leaderboard_sset_key, 1, ip)
 increment_timebucket_for_ip(current_timebucket, ip)
 
 -- BLOCKING LOGIC
