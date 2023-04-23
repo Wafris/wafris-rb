@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Wafris/wafris-rb/compare/v0.1.1...v0.1.2) (2023-04-23)
+
+
+### Bug Fixes
+
+* use the correct secret key for the action ([d545ef3](https://github.com/Wafris/wafris-rb/commit/d545ef39adcbffe1fa2c411de99ce32f8bf9330c))
+
 ## [0.1.1](https://github.com/Wafris/wafris-rb/compare/v0.1.0...v0.1.1) (2023-04-23)
 
 
