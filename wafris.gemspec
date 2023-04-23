@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Web application firewall for Rack apps'
   s.authors     = ['Micahel Buckbee', 'Ryan Castillo']
   s.files       = Dir.glob('{bin,lib}/**/*')
-  s.license     = 'MIT'
+  s.license     = 'Elastic License 2.0'
 
   s.required_ruby_version = '>= 2.5'
 
