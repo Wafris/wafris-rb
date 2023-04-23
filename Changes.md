@@ -1,18 +1,4 @@
-# Changelog
-
-## [0.1.0](https://github.com/Wafris/wafris-rb/compare/0.0.1...v0.1.0) (2023-04-23)
-
-
-### Features
-
-* Add interface for blocking IPs ([4cda7b1](https://github.com/Wafris/wafris-rb/commit/4cda7b1bd7923fd64fb562bd794872105b8303e5))
-
-
-### Bug Fixes
-
-* clear Readme ([b3dd8e7](https://github.com/Wafris/wafris-rb/commit/b3dd8e70f12fac5b9c2cbf384826450a31518d36))
-
-## Wafris Changes
+# Wafris Changes
 
 0.0.1
 ----------
