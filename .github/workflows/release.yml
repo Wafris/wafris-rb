@@ -19,3 +19,4 @@ jobs:
           package-name: wafris
           bump-minor-pre-major: true
           version-file: "lib/wafris/version.rb"
+          changelog-path: "Changes.md"
