@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/Wafris/wafris-rb/compare/v0.1.0...v0.1.1) (2023-04-23)
+
+
+### Bug Fixes
+
+* use the correct license Id ([51ab819](https://github.com/Wafris/wafris-rb/commit/51ab819c61afdbef9f7dcb118fa076953acb9841))
+
 ## [0.1.0](https://github.com/Wafris/wafris-rb/compare/0.0.1...v0.1.0) (2023-04-23)
 
 
