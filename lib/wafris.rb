@@ -49,6 +49,25 @@ module Wafris
       end
     end
 
+    def add_block(ip)
+      configuration.connection_pool.with do |conn|
+        conn.zadd(
+          'blocked_ranges',
+          IPAddr.new(ip).to_i,
+          ip
+        )
+      end
+    end
+
+    def remove_block(ip)
+      configuration.connection_pool.with do |conn|
+        conn.zrem(
+          'blocked_ranges',
+          ip
+        )
+      end
+    end
+
     def request_buckets(_now)
       graph_data = []
       configuration.connection_pool.with do |conn|
