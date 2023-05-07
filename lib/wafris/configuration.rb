@@ -36,14 +36,6 @@ module Wafris
       read_lua_dist("wafris_core")
     end
 
-    def graph_sha
-      @graph_sha ||= redis.script(:load, wafris_graph)
-    end
-
-    def wafris_graph
-      read_lua_dist("get_graph_data")
-    end
-
     private
 
     def read_lua_dist(filename)
