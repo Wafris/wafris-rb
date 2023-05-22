@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Wafris/wafris-rb/compare/v0.2.0...v0.3.0) (2023-05-22)
+
+
+### Features
+
+* introduce additional request headers ([0cfd6c3](https://github.com/Wafris/wafris-rb/commit/0cfd6c3647354b074da1965944a9cfd68c987b9c))
+
 ## [0.2.0](https://github.com/Wafris/wafris-rb/compare/v0.1.2...v0.2.0) (2023-05-17)
 
 
