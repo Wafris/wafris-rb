@@ -32,12 +32,18 @@ module Wafris
     def allow_request?(request)
       configuration.connection_pool.with do |conn|
         time = Time.now.to_f * 1000
+        puts "WAF LOG: Client IP #{client_ip(request)}"
+        puts "WAF LOG: Proxy IP #{proxy_ip(request)}"
         status = conn.evalsha(
           configuration.core_sha,
           argv: [
-            request.ip,
+            client_ip(request),
             IPAddr.new(request.ip).to_i,
-            time.to_i
+            time.to_i,
+            proxy_ip(request),
+            request.user_agent,
+            request.path,
+            request.host
           ]
         )
 
@@ -47,6 +53,20 @@ module Wafris
           return true
         end
       end
+    end
+
+    private
+
+    def client_ip(request)
+      return request.ip if request.headers['x-forwarded-for'].nil?
+
+      request.headers['x-forwarded-for'].split(',').first
+    end
+
+    def proxy_ip(request)
+      return nil if request.headers['x-forwarded-for'].nil?
+
+      request.headers['x-forwarded-for'].split(',').last
     end
   end
 end
