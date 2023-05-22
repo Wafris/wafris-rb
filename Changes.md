@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/Wafris/wafris-rb/compare/v0.3.0...v0.3.1) (2023-05-22)
+
+
+### Bug Fixes
+
+* headers method does not exist on the request ([e7a3290](https://github.com/Wafris/wafris-rb/commit/e7a3290f009ffa99064a1cce28cbfd7fac41de04))
+
 ## [0.3.0](https://github.com/Wafris/wafris-rb/compare/v0.2.0...v0.3.0) (2023-05-22)
 
 
