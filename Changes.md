@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/Wafris/wafris-rb/compare/v0.3.1...v0.3.2) (2023-05-23)
+
+
+### Bug Fixes
+
+* use the Rack constant for x-forwarded-for ([594c1f1](https://github.com/Wafris/wafris-rb/commit/594c1f1e55bcaa9c49c0bcd8851d842519e51047))
+
 ## [0.3.1](https://github.com/Wafris/wafris-rb/compare/v0.3.0...v0.3.1) (2023-05-22)
 
 
