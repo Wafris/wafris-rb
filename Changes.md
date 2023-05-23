@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.5](https://github.com/Wafris/wafris-rb/compare/v0.3.4...v0.3.5) (2023-05-23)
+
+
+### Bug Fixes
+
+* not populating the proxy sorted set correctly ([89cef20](https://github.com/Wafris/wafris-rb/commit/89cef201a96755f66f18d439c75bea39c68b436c))
+
 ## [0.3.4](https://github.com/Wafris/wafris-rb/compare/v0.3.3...v0.3.4) (2023-05-23)
 
 
