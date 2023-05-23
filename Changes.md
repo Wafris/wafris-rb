@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/Wafris/wafris-rb/compare/v0.3.3...v0.3.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* lots of tiny bugs because I'm trying to move too fast ([dd39a40](https://github.com/Wafris/wafris-rb/commit/dd39a4042f87319c684288f6a2736e42376fd31f))
+
 ## [0.3.3](https://github.com/Wafris/wafris-rb/compare/v0.3.2...v0.3.3) (2023-05-23)
 
 
