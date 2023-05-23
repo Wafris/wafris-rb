@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/Wafris/wafris-rb/compare/v0.3.2...v0.3.3) (2023-05-23)
+
+
+### Bug Fixes
+
+* didn't replace all the .headers calls ([6a0cff0](https://github.com/Wafris/wafris-rb/commit/6a0cff07e911320585e964c422f6c1104ea9ecc5))
+
 ## [0.3.2](https://github.com/Wafris/wafris-rb/compare/v0.3.1...v0.3.2) (2023-05-23)
 
 
