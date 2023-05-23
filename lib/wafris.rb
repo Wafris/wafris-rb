@@ -61,13 +61,13 @@ module Wafris
     def client_ip(request)
       return request.ip if request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).nil?
 
-      request.get_header[Rack::Request::HTTP_X_FORWARDED_FOR].split(',').first
+      request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).split(',').first
     end
 
     def proxy_ip(request)
       return nil if request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).nil?
 
-      request.get_header[Rack::Request::HTTP_X_FORWARDED_FOR].split(',').last
+      request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).split(',').last
     end
   end
 end
