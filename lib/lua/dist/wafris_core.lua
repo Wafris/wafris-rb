@@ -89,10 +89,9 @@ add_to_HLL_request_count(current_timebucket, request_id)
 -- LEADERBOARD DATA COLLECTION
 -- TODO: breaking change will to switch to client_ip: prefix
 increment_timebucket_for(nil, current_timebucket, client_ip)
-if proxy_ip ~= nil then
-  increment_timebucket_for(nil, current_timebucket, proxy_ip)
+if proxy_ip ~= nil and proxy_ip ~= "" then
+  increment_timebucket_for("proxy_ip:", current_timebucket, proxy_ip)
 end
-increment_timebucket_for("proxy_ip:", current_timebucket, proxy_ip)
 increment_timebucket_for("user_agent:", current_timebucket, user_agent)
 increment_timebucket_for("request_path:", current_timebucket, request_path)
 increment_timebucket_for("host:", current_timebucket, host)
