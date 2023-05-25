@@ -99,10 +99,10 @@ increment_timebucket_for("host:", current_timebucket, host)
 -- BLOCKING LOGIC
 -- Safelist Range Check
 -- TODO: ZRANGEBYSCORE is deprecated in Redis 6.2+. Replace with ZRANGE
-if next(redis.call("ZRANGEBYSCORE", "allowed_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
+if not next(redis.call("ZRANGEBYSCORE", "allowed_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) == nil then
   return "Allowed"
 -- Blocklist Range Check
-elseif next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
+elseif not next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) == nil then
   increment_timebucket_for("wafris:blocked:", current_timebucket, client_ip)
   return "Blocked"
 -- No Matches
