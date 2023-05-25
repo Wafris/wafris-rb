@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/Wafris/wafris-rb/compare/v0.5.0...v0.5.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* check if an empty table is returned or not ([e72543f](https://github.com/Wafris/wafris-rb/commit/e72543f62220806fd5b60492559de59bfb011adf))
+
 ## [0.5.0](https://github.com/Wafris/wafris-rb/compare/v0.4.0...v0.5.0) (2023-05-25)
 
 
