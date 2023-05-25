@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/Wafris/wafris-rb/compare/v0.4.0...v0.5.0) (2023-05-25)
+
+
+### Features
+
+* default to REDIS_URL env variable ([466996a](https://github.com/Wafris/wafris-rb/commit/466996a4673f21a19bf0d5041fb147f937a0ff7c))
+
 ## [0.4.0](https://github.com/Wafris/wafris-rb/compare/v0.3.5...v0.4.0) (2023-05-25)
 
 
