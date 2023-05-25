@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Wafris/wafris-rb/compare/v0.3.5...v0.4.0) (2023-05-25)
+
+
+### Features
+
+* create sorted set for tracking blocks ([e66f031](https://github.com/Wafris/wafris-rb/commit/e66f031e3ddb09f950d3bef07998c8211d53a527))
+
 ## [0.3.5](https://github.com/Wafris/wafris-rb/compare/v0.3.4...v0.3.5) (2023-05-23)
 
 
