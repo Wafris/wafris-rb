@@ -71,7 +71,7 @@ local max_requests = 100000
 local max_requests_per_ip = 10000
 
 local client_ip = ARGV[1]
-local ip_to_decimal = ARGV[2]
+local client_ip_to_decimal = ARGV[2]
 local unix_time_milliseconds = ARGV[3]
 local unix_time = ARGV[3] / 1000
 local proxy_ip = ARGV[4]
@@ -98,10 +98,10 @@ increment_timebucket_for("host:", current_timebucket, host)
 
 -- BLOCKING LOGIC
 -- Safelist Range Check
-if next(redis.call("ZRANGEBYSCORE", "allowed_ranges", ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
+if next(redis.call("ZRANGEBYSCORE", "allowed_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
   return "Allowed"
 -- Blocklist Range Check
-elseif next(redis.call("ZRANGEBYSCORE", "blocked_ranges", ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
+elseif next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
   return "Blocked"
 -- No Matches
 else
