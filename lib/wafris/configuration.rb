@@ -6,7 +6,10 @@ module Wafris
     attr_accessor :redis_pool_size
 
     def initialize
-      @redis = Redis.new
+      @redis = Redis.new(
+        url: ENV['REDIS_URL'],
+        ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+      )
       @redis_pool_size = 20
     end
 
