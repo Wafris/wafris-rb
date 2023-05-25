@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/Wafris/wafris-rb/compare/v0.5.1...v0.5.2) (2023-05-25)
+
+
+### Bug Fixes
+
+* lua needs brackets for logical operators ([7480bb1](https://github.com/Wafris/wafris-rb/commit/7480bb1d83dfc50152453e31b481959f477afbcd))
+
 ## [0.5.1](https://github.com/Wafris/wafris-rb/compare/v0.5.0...v0.5.1) (2023-05-25)
 
 
