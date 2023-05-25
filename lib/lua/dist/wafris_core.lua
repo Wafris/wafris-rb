@@ -102,6 +102,7 @@ if next(redis.call("ZRANGEBYSCORE", "allowed_ranges", client_ip_to_decimal, "+in
   return "Allowed"
 -- Blocklist Range Check
 elseif next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) then
+  increment_timebucket_for("wafris:blocked:", current_timebucket, client_ip)
   return "Blocked"
 -- No Matches
 else
