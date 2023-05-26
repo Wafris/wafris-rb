@@ -96,18 +96,21 @@ increment_timebucket_for("user_agent:", current_timebucket, user_agent)
 increment_timebucket_for("request_path:", current_timebucket, request_path)
 increment_timebucket_for("host:", current_timebucket, host)
 
+local foobar = redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)
+
+redis.breakpoint()
+
 -- BLOCKING LOGIC
--- Safelist Range Check
 -- TODO: ZRANGEBYSCORE is deprecated in Redis 6.2+. Replace with ZRANGE
-if not (next(redis.call("ZRANGEBYSCORE", "allowed_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) == nil) then
-  return "Allowed"
--- Blocklist Range Check
-elseif
-  not (next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, "+inf", "LIMIT", 0, 1)) == nil)
+if
+  -- ZRANGEBYSCORE will always return a lua table, even if empty
+  -- TODO: When we introduce ranges we'll have to do an exact check followed by a range starting with decimal ip to infinity.
+  -- If the first result returned is "END" that means it falls in the range
+  next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)) ~= nil
 then
   increment_timebucket_for("wafris:blocked:", current_timebucket, client_ip)
   return "Blocked"
 -- No Matches
 else
-  return "Not found"
+  return "Allowed"
 end
