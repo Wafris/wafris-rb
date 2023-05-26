@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/Wafris/wafris-rb/compare/v0.5.2...v0.5.3) (2023-05-26)
+
+
+### Bug Fixes
+
+* alter zrange to check for exact match ([4d1b772](https://github.com/Wafris/wafris-rb/commit/4d1b772869a7e97c674e246584e8df4a3789ed98))
+
 ## [0.5.2](https://github.com/Wafris/wafris-rb/compare/v0.5.1...v0.5.2) (2023-05-25)
 
 
