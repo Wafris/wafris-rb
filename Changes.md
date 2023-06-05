@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/Wafris/wafris-rb/compare/v0.5.3...v0.5.4) (2023-06-05)
+
+
+### Bug Fixes
+
+* only set proxy ip if x_forwarded_for equals client ip ([102104d](https://github.com/Wafris/wafris-rb/commit/102104d1675034aa92612090c24def9b04323ea5))
+
 ## [0.5.3](https://github.com/Wafris/wafris-rb/compare/v0.5.2...v0.5.3) (2023-05-26)
 
 
