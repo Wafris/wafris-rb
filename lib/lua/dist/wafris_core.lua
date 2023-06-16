@@ -48,7 +48,7 @@ local function get_time_bucket_from_timestamp(unix_time_milliseconds, minutes_fl
   if minutes_flag == false then
     return string.format("%04d-%02d-%02d-%02d", year, month, days, hours)
   elseif minutes_flag == true then
-    minutes = math.floor(unix_time / 60 % 60)
+    local minutes = math.floor(unix_time / 60 % 60)
     return string.format("%04d-%02d-%02d-%02d-%02d", year, month, days, hours, minutes)
   end
 end
@@ -71,6 +71,17 @@ local function increment_timebucket_for(type, timebucket, property)
   redis.call("ZINCRBY", type .. "leader-sset:" .. timebucket, 1, property)
 end
 
+local function increment_hourly_request_counters(unix_time_milliseconds)
+  for i = 1, 60 do
+    local timebucket_in_milliseconds = unix_time_milliseconds + 60000 * (i - 1)
+    local timebucket = get_time_bucket_from_timestamp(timebucket_in_milliseconds, true)
+    local key = "w:v0:hr-ct:" .. timebucket
+    redis.call("INCR", key)
+    -- Expire the key after 61 minutes if it has no expiry
+    redis.call("EXPIRE", key, 3660, "NX")
+  end
+end
+
 -- Configuration
 local max_requests = 100000
 local max_requests_per_ip = 10000
@@ -86,6 +97,9 @@ local host = ARGV[6]
 -- Initialize local variables
 local request_id = get_request_id(nil, client_ip, max_requests)
 local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds, false)
+
+-- CARD DATA COLLECTION
+increment_hourly_request_counters(unix_time_milliseconds)
 
 -- GRAPH DATA COLLECTION
 add_to_HLL_request_count(current_timebucket, request_id)
