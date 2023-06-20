@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/Wafris/wafris-rb/compare/v0.6.0...v0.7.0) (2023-06-20)
+
+
+### Features
+
+* Add method for incrementing hourly time buckets each time a request comes in ([106ff7f](https://github.com/Wafris/wafris-rb/commit/106ff7f428df82e847f7bcbfd27f4d8f25f3557e))
+
 ## [0.6.0](https://github.com/Wafris/wafris-rb/compare/v0.5.4...v0.6.0) (2023-06-20)
 
 
