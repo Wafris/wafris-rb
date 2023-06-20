@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/Wafris/wafris-rb/compare/v0.5.4...v0.6.0) (2023-06-20)
+
+
+### Features
+
+* Introduce ability for user to define their proxies so they won't be considered the request ip ([0f415df](https://github.com/Wafris/wafris-rb/commit/0f415df5970d8236748f0972446516f13ce37318))
+
 ## [0.5.4](https://github.com/Wafris/wafris-rb/compare/v0.5.3...v0.5.4) (2023-06-05)
 
 
