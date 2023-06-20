@@ -1,4 +1,4 @@
-local function get_time_bucket_from_timestamp(unix_time_milliseconds)
+local function get_time_bucket_from_timestamp(unix_time_milliseconds, minutes_flag)
   local function calculate_years_number_of_days(yr)
     return (yr % 4 == 0 and (yr % 100 ~= 0 or yr % 400 == 0)) and 366 or 365
   end
@@ -45,7 +45,12 @@ local function get_time_bucket_from_timestamp(unix_time_milliseconds)
   local hours = math.floor(unix_time / 3600 % 24)
   -- local minutes, seconds = math.floor(unix_time / 60 % 60), math.floor(unix_time % 60)
   -- hours = hours > 12 and hours - 12 or hours == 0 and 12 or hours
-  return string.format("%04d-%02d-%02d-%02d", year, month, days, hours)
+  if minutes_flag == false then
+    return string.format("%04d-%02d-%02d-%02d", year, month, days, hours)
+  elseif minutes_flag == true then
+    local minutes = math.floor(unix_time / 60 % 60)
+    return string.format("%04d-%02d-%02d-%02d-%02d", year, month, days, hours, minutes)
+  end
 end
 
 -- For: Relationship of IP to time of Request (Stream)
@@ -66,6 +71,17 @@ local function increment_timebucket_for(type, timebucket, property)
   redis.call("ZINCRBY", type .. "leader-sset:" .. timebucket, 1, property)
 end
 
+local function increment_hourly_request_counters(unix_time_milliseconds)
+  for i = 1, 60 do
+    local timebucket_in_milliseconds = unix_time_milliseconds + 60000 * (i - 1)
+    local timebucket = get_time_bucket_from_timestamp(timebucket_in_milliseconds, true)
+    local key = "w:v0:hr-ct:" .. timebucket
+    redis.call("INCR", key)
+    -- Expire the key after 61 minutes if it has no expiry
+    redis.call("EXPIRE", key, 3660, "NX")
+  end
+end
+
 -- Configuration
 local max_requests = 100000
 local max_requests_per_ip = 10000
@@ -80,7 +96,10 @@ local host = ARGV[6]
 
 -- Initialize local variables
 local request_id = get_request_id(nil, client_ip, max_requests)
-local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds)
+local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds, false)
+
+-- CARD DATA COLLECTION
+increment_hourly_request_counters(unix_time_milliseconds)
 
 -- GRAPH DATA COLLECTION
 add_to_HLL_request_count(current_timebucket, request_id)
