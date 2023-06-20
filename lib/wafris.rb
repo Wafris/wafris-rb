@@ -33,15 +33,13 @@ module Wafris
       configuration.connection_pool.with do |conn|
         time = Time.now.to_f * 1000
         puts "WAF LOG: headers with http-x-forwarded-for key #{request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR)}"
-        puts "WAF LOG: Client IP #{client_ip(request)}"
-        puts "WAF LOG: Proxy IP #{proxy_ip(request)}"
+        puts "WAF LOG: Client IP #{request.ip}"
         status = conn.evalsha(
           configuration.core_sha,
           argv: [
-            client_ip(request),
+            request.ip,
             IPAddr.new(request.ip).to_i,
             time.to_i,
-            proxy_ip(request),
             request.user_agent,
             request.path,
             request.host
@@ -54,20 +52,6 @@ module Wafris
           return true
         end
       end
-    end
-
-    private
-
-    def client_ip(request)
-      return request.ip if request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).eql?(request.ip)
-
-      request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).split(',').first
-    end
-
-    def proxy_ip(request)
-      return nil if request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).eql?(request.ip)
-
-      request.get_header(Rack::Request::HTTP_X_FORWARDED_FOR).split(',').last
     end
   end
 end

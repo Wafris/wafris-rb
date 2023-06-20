@@ -74,10 +74,9 @@ local client_ip = ARGV[1]
 local client_ip_to_decimal = ARGV[2]
 local unix_time_milliseconds = ARGV[3]
 local unix_time = ARGV[3] / 1000
-local proxy_ip = ARGV[4]
-local user_agent = ARGV[5]
-local request_path = ARGV[6]
-local host = ARGV[7]
+local user_agent = ARGV[4]
+local request_path = ARGV[5]
+local host = ARGV[6]
 
 -- Initialize local variables
 local request_id = get_request_id(nil, client_ip, max_requests)
@@ -89,16 +88,11 @@ add_to_HLL_request_count(current_timebucket, request_id)
 -- LEADERBOARD DATA COLLECTION
 -- TODO: breaking change will to switch to client_ip: prefix
 increment_timebucket_for(nil, current_timebucket, client_ip)
-if proxy_ip ~= nil and proxy_ip ~= "" then
-  increment_timebucket_for("proxy_ip:", current_timebucket, proxy_ip)
-end
 increment_timebucket_for("user_agent:", current_timebucket, user_agent)
 increment_timebucket_for("request_path:", current_timebucket, request_path)
 increment_timebucket_for("host:", current_timebucket, host)
 
-local foobar = redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)
-
-redis.breakpoint()
+redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)
 
 -- BLOCKING LOGIC
 -- TODO: ZRANGEBYSCORE is deprecated in Redis 6.2+. Replace with ZRANGE
