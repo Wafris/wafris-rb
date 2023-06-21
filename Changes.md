@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.3](https://github.com/Wafris/wafris-rb/compare/v0.8.2...v0.8.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* sync up keys used for blocks ([d281d29](https://github.com/Wafris/wafris-rb/commit/d281d29404813b9205d300506dcd3b6b8a3cdf46))
+
 ## [0.8.2](https://github.com/Wafris/wafris-rb/compare/v0.8.1...v0.8.2) (2023-06-21)
 
 
