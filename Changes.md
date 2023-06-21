@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/Wafris/wafris-rb/compare/v0.7.0...v0.8.0) (2023-06-21)
+
+
+### Features
+
+* Set core version on initial redis config ([34ccd36](https://github.com/Wafris/wafris-rb/commit/34ccd36b4e5bc84532359ae87bac6c4f13a4abd7))
+
 ## [0.7.0](https://github.com/Wafris/wafris-rb/compare/v0.6.0...v0.7.0) (2023-06-20)
 
 
