@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.4](https://github.com/Wafris/wafris-rb/compare/v0.8.3...v0.8.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* graph keys were not getting their expire time ([2d09f58](https://github.com/Wafris/wafris-rb/commit/2d09f5839e91066e0ba258bbfbbcfa3f8b920206))
+
 ## [0.8.3](https://github.com/Wafris/wafris-rb/compare/v0.8.2...v0.8.3) (2023-06-21)
 
 
