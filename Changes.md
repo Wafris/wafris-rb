@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/Wafris/wafris-rb/compare/v0.8.0...v0.8.1) (2023-06-21)
+
+
+### Bug Fixes
+
+* only default to the REDIS_URL if it is defined ([c9007ec](https://github.com/Wafris/wafris-rb/commit/c9007ec5cf41dc36401cda2cf53474b4e9fff443))
+* Remove expire option that was introduced with Redis 7 ([0ee41ac](https://github.com/Wafris/wafris-rb/commit/0ee41ac2b30fb220b8ba11f63d766c8620603cb5))
+
 ## [0.8.0](https://github.com/Wafris/wafris-rb/compare/v0.7.0...v0.8.0) (2023-06-21)
 
 
