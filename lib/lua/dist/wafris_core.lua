@@ -64,8 +64,8 @@ local function get_request_id(timestamp, ip, max_requests)
 end
 
 local function add_to_graph_timebucket(timebucket, request_id)
-  local key = wafris_prefix .. "gr-ct:"
-  redis.call("PFADD", key .. timebucket, request_id)
+  local key = wafris_prefix .. "gr-ct:" .. timebucket
+  redis.call("PFADD", key, request_id)
   -- Expire the key after 25 hours if it has no expiry
   redis.call("EXPIRE", key, 90000)
 end
