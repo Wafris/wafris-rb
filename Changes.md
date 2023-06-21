@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/Wafris/wafris-rb/compare/v0.8.1...v0.8.2) (2023-06-21)
+
+
+### Bug Fixes
+
+* set_version should happen after the configuration yield ([145b1c7](https://github.com/Wafris/wafris-rb/commit/145b1c7182f66ca8da027303b9695605327269f8))
+
 ## [0.8.1](https://github.com/Wafris/wafris-rb/compare/v0.8.0...v0.8.1) (2023-06-21)
 
 
