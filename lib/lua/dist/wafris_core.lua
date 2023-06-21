@@ -67,7 +67,7 @@ local function add_to_graph_timebucket(timebucket, request_id)
   local key = wafris_prefix .. "gr-ct:"
   redis.call("PFADD", key .. timebucket, request_id)
   -- Expire the key after 25 hours if it has no expiry
-  redis.call("EXPIRE", key, 90000, "NX")
+  redis.call("EXPIRE", key, 90000)
 end
 
 -- For: Leaderboard of IPs with Request count as score
@@ -75,7 +75,7 @@ local function increment_timebucket_for(type, timebucket, property)
   local key = wafris_prefix .. type .. "lb:" .. timebucket
   redis.call("ZINCRBY", key, 1, property)
   -- Expire the key after 25 hours if it has no expiry
-  redis.call("EXPIRE", key, 90000, "NX")
+  redis.call("EXPIRE", key, 90000)
 end
 
 local function increment_partial_hourly_request_counters(unix_time_milliseconds)
@@ -85,7 +85,7 @@ local function increment_partial_hourly_request_counters(unix_time_milliseconds)
     local key = wafris_prefix .. "hr-ct:" .. timebucket
     redis.call("INCR", key)
     -- Expire the key after 61 minutes if it has no expiry
-    redis.call("EXPIRE", key, 3660, "NX")
+    redis.call("EXPIRE", key, 3660)
   end
 end
 
