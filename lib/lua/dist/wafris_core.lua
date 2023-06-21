@@ -1,3 +1,6 @@
+local version = "v0.8:"
+local wafris_prefix = "w:" .. version
+
 local function get_time_bucket_from_timestamp(unix_time_milliseconds, minutes_flag)
   local function calculate_years_number_of_days(yr)
     return (yr % 4 == 0 and (yr % 100 ~= 0 or yr % 400 == 0)) and 366 or 365
@@ -46,10 +49,10 @@ local function get_time_bucket_from_timestamp(unix_time_milliseconds, minutes_fl
   -- local minutes, seconds = math.floor(unix_time / 60 % 60), math.floor(unix_time % 60)
   -- hours = hours > 12 and hours - 12 or hours == 0 and 12 or hours
   if minutes_flag == false then
-    return string.format("%04d-%02d-%02d-%02d", year, month, days, hours)
+    return string.format("%04d%02d%02d%02d", year, month, days, hours)
   elseif minutes_flag == true then
     local minutes = math.floor(unix_time / 60 % 60)
-    return string.format("%04d-%02d-%02d-%02d-%02d", year, month, days, hours, minutes)
+    return string.format("%04d%02d%02d%02d%02d", year, month, days, hours, minutes)
   end
 end
 
@@ -60,22 +63,26 @@ local function get_request_id(timestamp, ip, max_requests)
   return request_id
 end
 
-local function add_to_HLL_request_count(timebucket, request_id)
-  redis.call("PFADD", "unique-requests:" .. timebucket, request_id)
+local function add_to_graph_timebucket(timebucket, request_id)
+  local key = wafris_prefix .. "gr-ct:"
+  redis.call("PFADD", key .. timebucket, request_id)
+  -- Expire the key after 25 hours if it has no expiry
+  redis.call("EXPIRE", key, 90000, "NX")
 end
 
 -- For: Leaderboard of IPs with Request count as score
 local function increment_timebucket_for(type, timebucket, property)
-  -- TODO: breaking change will to switch to client_ip: prefix
-  type = type or "ip-"
-  redis.call("ZINCRBY", type .. "leader-sset:" .. timebucket, 1, property)
+  local key = wafris_prefix .. type .. "lb:" .. timebucket
+  redis.call("ZINCRBY", key, 1, property)
+  -- Expire the key after 25 hours if it has no expiry
+  redis.call("EXPIRE", key, 90000, "NX")
 end
 
-local function increment_hourly_request_counters(unix_time_milliseconds)
+local function increment_partial_hourly_request_counters(unix_time_milliseconds)
   for i = 1, 60 do
     local timebucket_in_milliseconds = unix_time_milliseconds + 60000 * (i - 1)
     local timebucket = get_time_bucket_from_timestamp(timebucket_in_milliseconds, true)
-    local key = "w:v0:hr-ct:" .. timebucket
+    local key = wafris_prefix .. "hr-ct:" .. timebucket
     redis.call("INCR", key)
     -- Expire the key after 61 minutes if it has no expiry
     redis.call("EXPIRE", key, 3660, "NX")
@@ -99,16 +106,15 @@ local request_id = get_request_id(nil, client_ip, max_requests)
 local current_timebucket = get_time_bucket_from_timestamp(unix_time_milliseconds, false)
 
 -- CARD DATA COLLECTION
-increment_hourly_request_counters(unix_time_milliseconds)
+increment_partial_hourly_request_counters(unix_time_milliseconds)
 
 -- GRAPH DATA COLLECTION
-add_to_HLL_request_count(current_timebucket, request_id)
+add_to_graph_timebucket(current_timebucket, request_id)
 
 -- LEADERBOARD DATA COLLECTION
--- TODO: breaking change will to switch to client_ip: prefix
-increment_timebucket_for(nil, current_timebucket, client_ip)
-increment_timebucket_for("user_agent:", current_timebucket, user_agent)
-increment_timebucket_for("request_path:", current_timebucket, request_path)
+increment_timebucket_for("ip:", current_timebucket, client_ip)
+increment_timebucket_for("ua:", current_timebucket, user_agent)
+increment_timebucket_for("path:", current_timebucket, request_path)
 increment_timebucket_for("host:", current_timebucket, host)
 
 redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)
