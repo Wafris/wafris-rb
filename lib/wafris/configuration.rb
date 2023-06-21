@@ -11,6 +11,7 @@ module Wafris
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       )
       @redis_pool_size = 20
+      set_version
     end
 
     def connection_pool
@@ -31,6 +32,15 @@ module Wafris
       CONNECTION_ERROR
     end
 
+    def set_version
+      version_line = File.open(
+        file_path("wafris_core"),
+        &:readline
+      )
+      version = version_line.slice(/v\d.\d/)
+      redis.set('version', version)
+    end
+
     def core_sha
       @core_sha ||= redis.script(:load, wafris_core)
     end
@@ -43,10 +53,14 @@ module Wafris
 
     def read_lua_dist(filename)
       File.read(
-        File.join(
-          File.dirname(__FILE__),
-          "../lua/dist/#{filename}.lua"
-        )
+        file_path(filename)
+      )
+    end
+
+    def file_path(filename)
+      File.join(
+        File.dirname(__FILE__),
+        "../lua/dist/#{filename}.lua"
       )
     end
   end

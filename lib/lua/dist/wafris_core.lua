@@ -1,3 +1,5 @@
+local version = "v0.8:"
+local wafris_prefix = "w:" .. version
 local function get_time_bucket_from_timestamp(unix_time_milliseconds, minutes_flag)
   local function calculate_years_number_of_days(yr)
     return (yr % 4 == 0 and (yr % 100 ~= 0 or yr % 400 == 0)) and 366 or 365
