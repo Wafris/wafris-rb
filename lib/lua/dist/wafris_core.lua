@@ -117,17 +117,18 @@ increment_timebucket_for("ua:", current_timebucket, user_agent)
 increment_timebucket_for("path:", current_timebucket, request_path)
 increment_timebucket_for("host:", current_timebucket, host)
 
-redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)
-
 -- BLOCKING LOGIC
 -- TODO: ZRANGEBYSCORE is deprecated in Redis 6.2+. Replace with ZRANGE
 if
-  -- ZRANGEBYSCORE will always return a lua table, even if empty
   -- TODO: When we introduce ranges we'll have to do an exact check followed by a range starting with decimal ip to infinity.
   -- If the first result returned is "END" that means it falls in the range
-  next(redis.call("ZRANGEBYSCORE", "blocked_ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1)) ~= nil
+
+  -- ZRANGEBYSCORE will always return a lua table, even if empty
+  -- This call is checking if the table is empty
+  next(redis.call("ZRANGEBYSCORE", "w:blocked-ranges", client_ip_to_decimal, client_ip_to_decimal, "LIMIT", 0, 1))
+  ~= nil
 then
-  increment_timebucket_for("wafris:blocked:", current_timebucket, client_ip)
+  increment_timebucket_for("blk:", current_timebucket, client_ip)
   return "Blocked"
 -- No Matches
 else
