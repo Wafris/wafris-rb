@@ -84,8 +84,8 @@ local function increment_partial_hourly_request_counters(unix_time_milliseconds)
     local timebucket = get_time_bucket_from_timestamp(timebucket_in_milliseconds, true)
     local key = wafris_prefix .. "hr-ct:" .. timebucket
     redis.call("INCR", key)
-    -- Expire the key after 61 minutes if it has no expiry
-    redis.call("EXPIRE", key, 3660)
+    -- Expire the key after 121 minutes if it has no expiry
+    redis.call("EXPIRE", key, 7260)
   end
 end
 
