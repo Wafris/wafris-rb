@@ -13,6 +13,7 @@ module Wafris
   class << self
     def configure
       yield configuration
+      configuration.set_version
     end
 
     def configuration
