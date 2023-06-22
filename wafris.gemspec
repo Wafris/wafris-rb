@@ -5,12 +5,18 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'wafris/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'wafris'
-  s.version     = Wafris::VERSION
-  s.summary     = 'Web application firewall for Rack apps'
-  s.authors     = ['Micahel Buckbee', 'Ryan Castillo']
-  s.files       = Dir.glob('{bin,lib}/**/*')
-  s.license     = 'Elastic-2.0'
+  s.name                   = 'wafris'
+  s.version                = Wafris::VERSION
+  s.summary                = 'Web application firewall for Rack apps'
+  s.authors                = ['Micahel Buckbee', 'Ryan Castillo']
+  s.files                  = Dir.glob('{bin,lib}/**/*')
+  s.license                = 'Elastic-2.0'
+  s.post_install_message   = <<-TEXT
+    Thank you for installing the wafris gem. Please note that this is
+    BETA software. We may ask that you clear your redis instance but
+    will do our best to help migrate any block or allow rules that
+    you have created.
+  TEXT
 
   s.required_ruby_version = '>= 2.5'
 
