@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.5](https://github.com/Wafris/wafris-rb/compare/v0.8.4...v0.8.5) (2023-06-22)
+
+
+### Bug Fixes
+
+* Set the version if the default redis env is detected ([72b5589](https://github.com/Wafris/wafris-rb/commit/72b558991d9541c8d40c261757766532d7cf55a9))
+
 ## [0.8.4](https://github.com/Wafris/wafris-rb/compare/v0.8.3...v0.8.4) (2023-06-21)
 
 
