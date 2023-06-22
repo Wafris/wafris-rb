@@ -7,7 +7,7 @@ module Wafris
     end
 
     def call(env)
-      user_defined_proxies = ENV['MY_PROXIES'].split(',') if ENV['MY_PROXIES']
+      user_defined_proxies = ENV['TRUSTED_PROXY_RANGES'].split(',') if ENV['TRUSTED_PROXY_RANGES']
 
       valid_ipv4_octet = /\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])/
 

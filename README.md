@@ -1,8 +1,122 @@
 # wafris-rb
 
-## Defining your trusted proxies
+## What's Wafris?
+Wafris is an open-source Web Application Firewall (WAF) that runs within your existing web framework powered by Redis.
+
+Need a better explanation? Read the overview at: [wafris.org](https://wafris.org)
+
+## What's the Wafris Ruby client (this repository)
+
+The Wafris Ruby client is gem that installs a Rack middleware into your Rails/Sinatra/Rack app that adds a Web Application Firewall (WAF).
+
+The WAF features allow you to:
+
+- Analyze the dark traffic hitting your site
+- Determine what requests should be blocked
+- Block malicious IP addresses from making requests
+
+## Installation and Configuration
+
+### Requirements
+- Redis 6+
+- Rails 6+
+- Ruby 3+
+
+### 1. Add the gem
+
+Update your Gemfile to include the wafris gem and run `bundle install`
+
+```
+# Gemfile
+gem 'wafris'
+```
+
+### 2. Set your Redis DB
+
+By default Wafris will use the Redis instance defined in the environment variable `ENV['REDIS_URL']`
+
+If you need to specify a different Redis location you can do so with an initalizer.
+
+- create a new file `config/initalizers/wafris.rb`
+
+```ruby
+Wafris.configure do |c|
+    c.redis = Redis.new(
+      url: ENV['REDIS_URL']
+    )
+end
+```
+
+
+### 3. Connect to our Redis from Wafris Hub
+
+Go to https://wafris.org/users/sign_up 
+
+Create an account 
+
+Add a new Firewall using the Redis URL from your provider. 
+
+## Trusted Proxies
+
+CDNs, Cloud WAFs, Load balancers and some hosting providers intercept ("proxy") the HTTP requests destined for your application. 
+
+If you're _not_ using any of the above services you can safely ignore this section. 
+
+### How to tell if you need to set this
+
+Beyond just knowing if you're using one of the above services you can verify the presence of the `x-forwarded-for` header with one of the following snippets. 
+
+#### In a controller:
+
+```ruby 
+puts request.headers['X-Forwarded-For']
+```
+
+#### In a view:
+
+```ruby
+<%= request.headers['X-Forwarded-For'] %>
+```
+
+If this header is present and contains multiple IP address you need to set the Trusted Proxy Ranges.
+
+Example:
+
+```70.161.20.143, 185.93.229.11```
+
+
+### Setting the Trusted Proxy Ranges
+
+Wafris looks for an environment variable: `TRUSTED_PROXY_RANGES` 
+
+The variable should contain a comma separated list of IP addresses that your trust to make requests against your application.
+
+`TRUSTED_PROXY_RANGES=103.21.244.0,103.21.244.1  # Cloudflare IPs`
+
+Most providers 
+
+Note: Wafris
+
+### X-Forwarded-For header
+
+Services proxying traffic to your app modify the `x-forwarded-for` HTTP request header, appending their own IP address to the value stored in the header as the request is passed through each proxy.
+
+If you're not sure if you need to set this 
+
+This presents three problems:
+
+1. HTTP requests headers are easily spoofed and an attacker could trivially fake IP addresses (pretending to be a proxy) to get around IP blocking rules you set in Wafris.
+
+2. At an app level you would like to enforce receiving requests _only_ from the proxies you trust as requests coming from IP address outside of the service IP ranges you're using are most likely attacks and should be blocked.
+
+3. Given a list of IP addresses in the header, how do we figure out what the real client IP making the request is?
+
+All of these problems are solved by defining what proxies your application should trust which will allow Wafris to automatically sort out the requests for you. 
+
+### 
 
 *Trusted proxies* are IPs or ranges that we reject from tracking as they mask the real client IP.
+
 This is a security measure to prevent clients from spoofing their IP address.
 
 By default we accept the following as *trusted proxies*:
@@ -14,10 +128,7 @@ By default we accept the following as *trusted proxies*:
   * private IPv4 range 192.168.x.x
   * localhost hostname, and unix domain sockets
 
-Depending on your setup you may have to define your own *trusted proxies*. We allow this via
-a `MY_PROXIES` environment variable that you can set to a comma separated list of IPs.
-
-`MY_PROXIES=103.21.244.0,103.21.244.1  # Cloudflare IPs`
+Depending on your setup you may have to define your own *trusted proxies*.
 
 We do accept ranges but these have to be submitted in the form of a regex.
 
