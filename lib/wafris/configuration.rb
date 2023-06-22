@@ -11,6 +11,8 @@ module Wafris
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       )
       @redis_pool_size = 20
+
+      set_version if ENV['REDIS_URL']
     end
 
     def connection_pool
