@@ -60,7 +60,7 @@ Alternatively, you can add rules to your Wafris instance from the Wafris CLI - h
 
 ## Trusted Proxies
 
-If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges]('/docs/trusted-proxies.md')
+If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](/docs/trusted-proxies.md)
 
 ## Help / Support
 
