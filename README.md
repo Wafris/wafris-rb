@@ -13,7 +13,12 @@ The WAF features allow you to:
 
 - Analyze the dark traffic hitting your site
 - Determine what requests should be blocked
-- Block malicious IP addresses from making requests
+- Block malicious IP addresses (IPv6 and IPv4) from making requests
+- Can also block on hosts, paths, user agents, parameters, and methods
+- Create rate limit rules
+- Block by CIDR ranges
+- Allow list for IPs and CIDRs
+- Detect malicious traffic patterns
 
 ## Installation and Configuration
 
