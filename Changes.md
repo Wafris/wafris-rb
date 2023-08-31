@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0](https://github.com/Wafris/wafris-rb/compare/v0.8.5...v0.9.0) (2023-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* Core now processes params, host, and request methods. The last 24 hours of requests are stored and core has the ability to block IPs, paths, params, host and request methods. It also supports rate limiting. Support for both IPv4 and IPv6 IPs.
+
+### Features
+
+* Updated core and v1 functionality ([dd3bde0](https://github.com/Wafris/wafris-rb/commit/dd3bde0550a4e1d4a595163d0db858b28bac4f9c))
+
 ## [0.8.5](https://github.com/Wafris/wafris-rb/compare/v0.8.4...v0.8.5) (2023-06-22)
 
 
