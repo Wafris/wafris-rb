@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'version'
+
 module Wafris
   class Configuration
     attr_accessor :redis
