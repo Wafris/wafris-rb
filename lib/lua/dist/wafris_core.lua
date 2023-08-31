@@ -1,4 +1,4 @@
-local use_timestamps_as_request_ids = true
+local use_timestamps_as_request_ids = false
 local EXPIRATION_IN_SECONDS = 86400
 
 local function get_timebucket(timestamp_in_seconds)
