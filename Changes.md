@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.2](https://github.com/Wafris/wafris-rb/compare/v0.9.1...v0.9.2) (2023-08-31)
+
+
+### Bug Fixes
+
+* let redis generate the request ids ([39a1ffc](https://github.com/Wafris/wafris-rb/commit/39a1ffc0c092dae6211885534579dbe97f905c14))
+* we expect to get the params as a string not a hash ([8423b78](https://github.com/Wafris/wafris-rb/commit/8423b782760b0f6f157ccea4c8db073d394973b9))
+
 ## [0.9.1](https://github.com/Wafris/wafris-rb/compare/v0.9.0...v0.9.1) (2023-08-31)
 
 
