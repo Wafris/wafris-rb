@@ -12,7 +12,8 @@ module Wafris
       )
       @redis_pool_size = 20
 
-      set_version if ENV['REDIS_URL']
+      # TODO: update HUB with the REDIS_URL on startup
+      create_settings if ENV['REDIS_URL']
     end
 
     def connection_pool
@@ -33,13 +34,11 @@ module Wafris
       CONNECTION_ERROR
     end
 
-    def set_version
-      version_line = File.open(
-        file_path("wafris_core"),
-        &:readline
-      )
-      version = version_line.slice(/v\d.\d/)
-      redis.set('version', version)
+    def create_settings
+      redis.hset('waf-settings',
+                 'version', Wafris::VERSION,
+                 'client', 'ruby',
+                 'redis-host', 'heroku')
     end
 
     def core_sha
