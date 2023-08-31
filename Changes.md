@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/Wafris/wafris-rb/compare/v0.9.0...v0.9.1) (2023-08-31)
+
+
+### Bug Fixes
+
+* forgot to include the require ([1ce1b4c](https://github.com/Wafris/wafris-rb/commit/1ce1b4c7bbf78f3d252ad15ac1ea69a0cee2be9f))
+
 ## [0.9.0](https://github.com/Wafris/wafris-rb/compare/v0.8.5...v0.9.0) (2023-08-31)
 
 
