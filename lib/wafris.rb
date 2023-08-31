@@ -35,7 +35,7 @@ module Wafris
             time,
             request.user_agent,
             request.path,
-            request.params,
+            request.query_string,
             request.host,
             request.request_method
           ]
