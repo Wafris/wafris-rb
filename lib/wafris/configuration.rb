@@ -14,8 +14,10 @@ module Wafris
       )
       @redis_pool_size = 20
 
-      # TODO: update HUB with the REDIS_URL on startup
-      create_settings if ENV['REDIS_URL']
+      puts "[Wafris] attempting firewall connection via REDIS_URL."
+      create_settings
+    rescue Redis::CannotConnectError
+      puts "[Wafris] firewall disabled. Cannot connect to REDIS_URL. Will attempt Wafris.configure if it exists."
     end
 
     def connection_pool
@@ -23,24 +25,12 @@ module Wafris
         ConnectionPool.new(size: redis_pool_size) { redis }
     end
 
-    def enabled?
-      redis.ping
-
-      return true
-    rescue Redis::CannotConnectError
-      raise <<~CONNECTION_ERROR
-        Wafris cannot connect to Redis.
-
-        The current Redis instance points to a connection that
-        cannot be pinged.
-      CONNECTION_ERROR
-    end
-
     def create_settings
       redis.hset('waf-settings',
                  'version', Wafris::VERSION,
                  'client', 'ruby',
                  'redis-host', 'heroku')
+      puts "[Wafris] firewall enabled. Connected to Redis. Ready to process requests. Set rules at: https://wafris.org/hub"
     end
 
     def core_sha

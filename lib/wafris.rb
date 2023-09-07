@@ -13,7 +13,10 @@ module Wafris
   class << self
     def configure
       yield configuration
+      puts "[Wafris] attempting firewall connection via Wafris.configure initializer."
       configuration.create_settings
+    rescue Redis::CannotConnectError
+      puts "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings."
     end
 
     def configuration

@@ -26,12 +26,15 @@ module Wafris
 
       request = Rack::Request.new(env)
 
-      if Wafris.configuration.enabled? && Wafris.allow_request?(request)
+      if Wafris.allow_request?(request)
         @app.call(env)
       else
         puts 'blocked'
         [403, {}, ['Blocked']]
       end
+    rescue StandardError => e
+      puts "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
+      @app.call(env)
     end
   end
 end
