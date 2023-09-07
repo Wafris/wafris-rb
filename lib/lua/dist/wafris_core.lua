@@ -1,5 +1,9 @@
-local use_timestamps_as_request_ids = false
+
+
+local USE_TIMESTAMPS_AS_REQUEST_IDS = false
 local EXPIRATION_IN_SECONDS = 86400
+local EXPIRATION_OFFSET_IN_SECONDS = 3600
+
 
 local function get_timebucket(timestamp_in_seconds)
   local startOfHourTimestamp = math.floor(timestamp_in_seconds / 3600) * 3600
@@ -7,6 +11,7 @@ local function get_timebucket(timestamp_in_seconds)
 end
 
 local function set_property_value_id_lookups(property_abbreviation, property_value)
+
   local value_key = property_abbreviation .. "V" .. property_value
   local property_id = redis.call("GET", value_key)
 
@@ -15,24 +20,28 @@ local function set_property_value_id_lookups(property_abbreviation, property_val
     redis.call("SET", value_key, property_id)
     redis.call("SET", property_abbreviation .. "I" .. property_id, property_value)
   else
-    redis.call("EXPIRE", value_key, EXPIRATION_IN_SECONDS)
-    redis.call("EXPIRE", property_abbreviation .. "I" .. property_id, EXPIRATION_IN_SECONDS)
+    redis.call("EXPIRE", value_key, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
+    redis.call("EXPIRE", property_abbreviation .. "I" .. property_id, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
   end
 
   return property_id
 end
 
 local function increment_leaderboard_for(property_abbreviation, property_id, timebucket)
+
   local key = property_abbreviation .. "L" .. timebucket
   redis.call("ZINCRBY", key, 1, property_id)
   redis.call("EXPIRE", key, EXPIRATION_IN_SECONDS)
 end
 
 local function set_property_to_requests_list(property_abbreviation, property_id, request_id, timebucket)
+
   local key = property_abbreviation .. "R" .. property_id .. "-" .. timebucket
   redis.call("LPUSH", key, request_id)
-  redis.call("EXPIRE", key, EXPIRATION_IN_SECONDS)
+
+  redis.call("EXPIRE", key, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
 end
+
 
 local function ip_in_hash(hash_name, ip_address)
   local found_ip = redis.call('HEXISTS', hash_name, ip_address)
@@ -45,7 +54,9 @@ local function ip_in_hash(hash_name, ip_address)
 end
 
 local function ip_in_cidr_range(cidr_set, ip_decimal_lexical)
+
   local higher_value = redis.call('ZRANGEBYLEX', cidr_set, '['..ip_decimal_lexical, '+', 'LIMIT', 0, 1)[1]
+
   local lower_value = redis.call('ZREVRANGEBYLEX', cidr_set, '['..ip_decimal_lexical, '-', 'LIMIT', 0, 1)[1]
 
   if not (higher_value and lower_value) then
@@ -64,6 +75,7 @@ end
 
 local function match_by_pattern(property_abbreviation, property_value)
   local hash_name = "rules-blocked-" .. property_abbreviation
+
   local patterns = redis.call('HKEYS', hash_name)
 
   for _, pattern in ipairs(patterns) do
@@ -76,10 +88,13 @@ local function match_by_pattern(property_abbreviation, property_value)
 end
 
 local function blocked_by_rate_limit(request_properties)
+
   local rate_limiting_rules_values = redis.call('HKEYS', 'rules-blocked-rate-limits')
 
   for i, rule_name in ipairs(rate_limiting_rules_values) do
+
     local conditions_hash = redis.call('HGETALL', rule_name .. "-conditions")
+
     local all_conditions_match = true
 
     for j = 1, #conditions_hash, 2 do
@@ -93,9 +108,13 @@ local function blocked_by_rate_limit(request_properties)
     end
 
     if all_conditions_match then
+
       local rule_settings_key = rule_name .. "-settings"
+
       local limit, time_period, limited_by, rule_id = unpack(redis.call('HMGET', rule_settings_key, 'limit', 'time-period', 'limited-by', 'rule-id'))
+
       local throttle_key = rule_name .. ":" .. limit .. "V" .. request_properties.ip
+
       local new_value = redis.call('INCR', throttle_key)
 
       if new_value == 1 then
@@ -113,6 +132,7 @@ end
 
 local function check_rules(functions_to_check)
   for _, check in ipairs(functions_to_check) do
+
     local rule = check.func(unpack(check.args))
     local category = check.category
 
@@ -170,13 +190,17 @@ local request = {
   ["method_id"] = set_property_value_id_lookups("m", ARGV[8])
 }
 
-  local current_timebucket = get_timebucket(request.ts_in_seconds)
+
+
+local current_timebucket = get_timebucket(request.ts_in_seconds)
+
   local blocked_rule = false
   local blocked_category = nil
   local treatment = "p"
+
   local stream_id
 
-  if use_timestamps_as_request_ids == true then
+  if USE_TIMESTAMPS_AS_REQUEST_IDS == true then
       stream_id = request.ts_in_milliseconds
   else
       stream_id = "*"
@@ -209,6 +233,7 @@ local request = {
 
     table.insert(stream_args, "ar")
     table.insert(stream_args, allowed_rule)
+
   else
     blocked_rule, blocked_category = check_blocks(request)
   end
