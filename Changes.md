@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Wafris/wafris-rb/compare/v1.0.0...v1.1.0) (2023-09-07)
+
+
+### Features
+
+* ensure web requests go through even when firewall is disabled ([e1d1a95](https://github.com/Wafris/wafris-rb/commit/e1d1a955ad5688a1f525b5ed51201ce08a125f4e))
+
+
+### Bug Fixes
+
+* add in offset since we were seeing race conditions when accessing keys ([9da6b9f](https://github.com/Wafris/wafris-rb/commit/9da6b9f9f2283bb7bb1f0f9085989d9652e727c2))
+
 ## [1.0.0](https://github.com/Wafris/wafris-rb/compare/v0.9.1...v1.0.0) (2023-08-31)
 
 
