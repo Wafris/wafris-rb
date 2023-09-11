@@ -6,6 +6,7 @@ require 'redis'
 
 require 'wafris/configuration'
 require 'wafris/middleware'
+require 'wafris/log_suppressor'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
 
@@ -13,10 +14,10 @@ module Wafris
   class << self
     def configure
       yield configuration
-      puts "[Wafris] attempting firewall connection via Wafris.configure initializer."
+      puts "[Wafris] attempting firewall connection via Wafris.configure initializer." unless LogSuppressor.suppress_logs?
       configuration.create_settings
     rescue Redis::CannotConnectError
-      puts "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings."
+      puts "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings." unless LogSuppressor.suppress_logs?
     end
 
     def configuration

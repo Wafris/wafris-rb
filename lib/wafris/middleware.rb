@@ -33,7 +33,7 @@ module Wafris
         [403, {}, ['Blocked']]
       end
     rescue StandardError => e
-      puts "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
+      puts "[Wafris] Redis connection error: #{e.message}. Request passed without rules check." unless LogSuppressor.suppress_logs?
       @app.call(env)
     end
   end

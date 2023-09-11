@@ -14,10 +14,10 @@ module Wafris
       )
       @redis_pool_size = 20
 
-      puts "[Wafris] attempting firewall connection via REDIS_URL."
+      puts "[Wafris] attempting firewall connection via REDIS_URL." unless LogSuppressor.suppress_logs?
       create_settings
     rescue Redis::CannotConnectError
-      puts "[Wafris] firewall disabled. Cannot connect to REDIS_URL. Will attempt Wafris.configure if it exists."
+      puts "[Wafris] firewall disabled. Cannot connect to REDIS_URL. Will attempt Wafris.configure if it exists." unless LogSuppressor.suppress_logs?
     end
 
     def connection_pool
@@ -30,7 +30,7 @@ module Wafris
                  'version', Wafris::VERSION,
                  'client', 'ruby',
                  'redis-host', 'heroku')
-      puts "[Wafris] firewall enabled. Connected to Redis. Ready to process requests. Set rules at: https://wafris.org/hub"
+      puts "[Wafris] firewall enabled. Connected to Redis. Ready to process requests. Set rules at: https://wafris.org/hub" unless LogSuppressor.suppress_logs?
     end
 
     def core_sha
