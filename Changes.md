@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Wafris/wafris-rb/compare/v1.1.0...v1.1.1) (2023-09-11)
+
+
+### Bug Fixes
+
+* suppress messages in test, dev, and ci ([5c4ebbb](https://github.com/Wafris/wafris-rb/commit/5c4ebbbbbdd1aa696dfbf9080c885521510fee78))
+
 ## [1.1.0](https://github.com/Wafris/wafris-rb/compare/v1.0.0...v1.1.0) (2023-09-07)
 
 
