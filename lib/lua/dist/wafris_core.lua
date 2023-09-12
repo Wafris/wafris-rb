@@ -73,13 +73,18 @@ local function ip_in_cidr_range(cidr_set, ip_decimal_lexical)
   end
 end
 
+local function escapePattern(s)
+    local patternSpecials = "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+    return s:gsub(patternSpecials, "%%%1")
+end
+
 local function match_by_pattern(property_abbreviation, property_value)
   local hash_name = "rules-blocked-" .. property_abbreviation
 
   local patterns = redis.call('HKEYS', hash_name)
 
   for _, pattern in ipairs(patterns) do
-    if string.find(property_value, pattern) then
+    if string.find(property_value, escapePattern(pattern)) then
       return pattern
     end
   end
