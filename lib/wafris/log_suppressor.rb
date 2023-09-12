@@ -7,7 +7,7 @@ module Wafris
     end
 
     def self.suppressed_environments
-      ['development', 'test'] + (ENV['CI'] ? ['CI'] : [])
+      ['test'] + (ENV['CI'] ? ['CI'] : [])
     end
 
     def self.current_environment
