@@ -84,7 +84,7 @@ local function match_by_pattern(property_abbreviation, property_value)
   local patterns = redis.call('HKEYS', hash_name)
 
   for _, pattern in ipairs(patterns) do
-    if string.find(property_value, escapePattern(pattern)) then
+    if string.find(string.lower(property_value), string.lower(escapePattern(pattern))) then
       return pattern
     end
   end
