@@ -63,6 +63,20 @@ Go to https://wafris.org/hub to login or create a new account.
 Alternatively, you can add rules to your Wafris instance from the Wafris CLI - https://github.com/Wafris/wafris-cli 
 
 
+### 4. Testing in Development (optional)
+
+If you'd like to ensure that Waris is working properly you can launch it in development. Ensure that your Wafris configuration
+or `REDIS_URL` is set, otherwise Wafris will use the default Redis connection: `localhost:6379/0`.
+
+Set a block path using the following command where `<path>` is the bath you'd like to block:
+
+```sh
+redis-cli HSET rules-blocked-p <path> "This is a test rule"
+```
+
+Then visit this path in your browser: http://localhost:3000/<path> and you should see a page with
+'blocked' and a 403 status code.
+
 ## Trusted Proxies
 
 If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md)
