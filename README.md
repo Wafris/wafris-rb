@@ -74,7 +74,7 @@ Set a block path using the following command where `<path>` is the bath you'd li
 redis-cli HSET rules-blocked-p <path> "This is a test rule"
 ```
 
-Then visit this path in your browser: http://localhost:3000/<path> and you should see a page with
+Then visit this path in your browser: `http://localhost:3000/<path>` and you should see a page with
 'blocked' and a 403 status code.
 
 ## Trusted Proxies
