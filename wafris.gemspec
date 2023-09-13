@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'minitest', '~> 5.1'
   s.add_development_dependency 'pry', '~> 0.14', '>= 0.14.1'
-  s.add_development_dependency 'rack-test', '~> 2.0', '>= 2.0.2'
-  s.add_development_dependency 'rails', '~> 7.0', '>= 7.0.4'
-  s.add_development_dependency 'railties', '~> 7.0', '>= 7.0.4'
-  s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
+  s.add_development_dependency 'rack-test', '>= 0.6'
+  s.add_development_dependency 'rails', '>= 5.0'
+  s.add_development_dependency 'railties', '>= 5.0'
+  s.add_development_dependency 'rake', '>= 12.0'
 end
