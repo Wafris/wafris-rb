@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Wafris/wafris-rb/compare/v1.1.1...v1.1.2) (2023-09-13)
+
+
+### Bug Fixes
+
+* escape special characters before doing string.find ([a5599ec](https://github.com/Wafris/wafris-rb/commit/a5599ec03f35583c76fabe76996975c577bb4ad2))
+
 ## [1.1.1](https://github.com/Wafris/wafris-rb/compare/v1.1.0...v1.1.1) (2023-09-11)
 
 
