@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'connection_pool', '~> 2.3', '>= 2.3.0'
   s.add_runtime_dependency 'rack', '~> 2.0'
-  s.add_runtime_dependency 'redis', '~> 4.8', '>= 4.8.0'
+  s.add_runtime_dependency 'redis', '>= 4.8.0'
 
   s.add_development_dependency 'minitest', '~> 5.1'
   s.add_development_dependency 'pry', '~> 0.14', '>= 0.14.1'
