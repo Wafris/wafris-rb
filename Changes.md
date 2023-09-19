@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/Wafris/wafris-rb/compare/v1.1.2...v1.1.3) (2023-09-19)
+
+
+### Bug Fixes
+
+* Remove documentation for using REDIS_URL as the default ([2d3d9a4](https://github.com/Wafris/wafris-rb/commit/2d3d9a4a54d30507ca9e8cee7e0964df21b28fe6))
+
 ## [1.1.2](https://github.com/Wafris/wafris-rb/compare/v1.1.1...v1.1.2) (2023-09-13)
 
 
