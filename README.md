@@ -59,9 +59,7 @@ The key is that the `Wafris::Middleware` line shows up before the `Rack::Attack`
 
 ### 2. Set your Redis Connection
 
-By default Wafris will use the Redis instance defined in the environment variable `ENV['REDIS_URL']`
-
-If you need to specify a different Redis location you can do so with an initalizer.
+Specify your [`redis://` URL][redis-url] with the following initalizer.
 
 ```ruby
 # config/initalizers/wafris.rb
