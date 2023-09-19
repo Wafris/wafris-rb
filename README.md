@@ -67,22 +67,37 @@ Specify your [`redis://` URL][redis-url] with the following initalizer.
 Wafris.configure do |c|
     c.redis = Redis.new(
       # redis://<username>:<password>@<host>:<port>
-      url: ENV['REDIS_URL']
+      url: ENV['WAFRIS_REDIS_URL']
     )
 end
 ```
 
-Note: depending upon your Redis provider the environment variable for your Redis connection string may be named something else.
+Note that if you're using sidekiq it defaults to the environment variable, `REDIS_URL`. So we recommend using something different.
 
 ### 3. Testing in Development (optional)
 
-If you'd like to ensure that Waris is working properly you can launch it in development. Ensure that your Wafris configuration
-or `REDIS_URL` is set, otherwise Wafris will use the default Redis connection: `localhost:6379/0`.
+If you'd like to ensure that Waris is working properly you can launch your application in development. You're going to visit a path
+that does not exist in your routes and would normally return a 404. Once blocked it will instead return a page with 'Blocked' and
+a status code of 403.
 
-Set a block path using the following command where `<path>` is the bath you'd like to block:
+If you're already using Redis locally we recommend that you use a separate Redis DB. Redis allows you to do this by appending
+`/<db number>` to the end of your Redis URL. If you'd like to use DB 13 for example, you'd use the following:
+
+```
+redis://localhost:6379/13
+```
+
+Set a block path using the following command where `<path>` is the path you'd like to block. In the following example we're going to set
+the block for any path that contains `wafris-test`:
 
 ```sh
-redis-cli HSET rules-blocked-p <path> "This is a test rule"
+redis-cli HSET rules-blocked-p wafris-test "This is a test rule"
+```
+
+Note that if you're using a different DB you'd use the `-n` argument to specify the DB number:
+
+```sh
+redis-cli -n 13 HSET rules-blocked-p wafris-test "This is a test rule"
 ```
 
 Then visit this path in your browser: `http://localhost:3000/<path>` and you should see a page with
@@ -95,8 +110,10 @@ To push to production you'll need to setup a Redis instance. On Heroku we've tri
 Once the instance is setup, you'll need an accessible Redis URL. You can test this connection with the following command:
 
 ```sh
-redis-cli -u <REDIS_URL> PING
+redis-cli -u <Redis URL> PING
 ```
+
+resulting in `PONG`
 
 ### 5. Connect on Wafris Hub
 
