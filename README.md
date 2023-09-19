@@ -40,11 +40,7 @@ gem 'wafris'
 
 #### In case you have Rack::Attack
 
-If you have Rack::Attack already installed, it can workk side by side with Wafris. You have two options:
-1. Include the Rack::Attack middleware before Wafris.
-2. Include the Rack::Attack middleware after Wafris.
-
-We recommend including Wafris before Rack::Attack so that Wafris can capture the traffic data before it is blocked.
+If you have Rack::Attack already installed, it can workk side by side with Wafris. We recommend including Wafris before Rack::Attack so that Wafris can capture the traffic data before it is blocked.
 Then you can gradually migrate your rule set from Rack::Attack to Wafris and visualize the blocked traffic.
 
 To ensure the order it's as simple as including the `wafris` gem before the `rack-attack` gem.
@@ -55,7 +51,11 @@ gem 'wafris'
 gem 'rack-attack'
 ```
 
-to confirm that the order is correct you can run `rake middleware` and the output should look like:
+to confirm that the order is correct you can run `rake middleware` and the output should look similar to the following:
+
+<img width="573" alt="image" src="https://github.com/Wafris/wafris-rb/assets/155443/2dd9f5dc-58e6-40c2-96b6-f7b97267a039">
+
+The key is that the `Wafris::Middleware` line shows up before the `Rack::Attack` line.
 
 ### 2. Set your Redis Connection
 
