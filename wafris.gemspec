@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.files                  = Dir.glob('{bin,lib}/**/*')
   s.license                = 'Elastic-2.0'
   s.post_install_message   = <<-TEXT
-    Thank you for installing the wafris gem. 
-    
+    Thank you for installing the wafris gem.
+
     If you haven't already, please sign up for Wafris Hub at:
 
     https://wafris.org

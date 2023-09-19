@@ -23,9 +23,11 @@ The WAF features allow you to:
 ## Installation and Configuration
 
 ### Requirements
-- Redis 6+
-- Rails 6+
-- Ruby 3+
+- Redis 4.8+
+- Rails 5+
+- Ruby 2.5+
+
+If you have a previous version of one of the requirements above please let us know and we'll test it out.
 
 ### 1. Add the gem
 
@@ -35,6 +37,25 @@ Update your Gemfile to include the Wafris gem and run `bundle install`
 # Gemfile
 gem 'wafris'
 ```
+
+#### In case you have Rack::Attack
+
+If you have Rack::Attack already installed, it can workk side by side with Wafris. You have two options:
+1. Include the Rack::Attack middleware before Wafris.
+2. Include the Rack::Attack middleware after Wafris.
+
+We recommend including Wafris before Rack::Attack so that Wafris can capture the traffic data before it is blocked.
+Then you can gradually migrate your rule set from Rack::Attack to Wafris and visualize the blocked traffic.
+
+To ensure the order it's as simple as including the `wafris` gem before the `rack-attack` gem.
+
+```
+# Gemfile
+gem 'wafris'
+gem 'rack-attack'
+```
+
+to confirm that the order is correct you can run `rake middleware` and the output should look like:
 
 ### 2. Set your Redis Connection
 
