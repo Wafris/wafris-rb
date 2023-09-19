@@ -66,6 +66,7 @@ Specify your [`redis://` URL][redis-url] with the following initalizer.
 
 Wafris.configure do |c|
     c.redis = Redis.new(
+      # redis://<username>:<password>@<host>:<port>
       url: ENV['REDIS_URL']
     )
 end
@@ -73,16 +74,7 @@ end
 
 Note: depending upon your Redis provider the environment variable for your Redis connection string may be named something else.
 
-### 3. Connect on Wafris Hub
-
-Go to https://wafris.org/hub to login or create a new account.
-
-- Add a new Firewall using the Redis URL you specified in step two.
-
-Alternatively, you can add rules to your Wafris instance from the Wafris CLI - https://github.com/Wafris/wafris-cli 
-
-
-### 4. Testing in Development (optional)
+### 3. Testing in Development (optional)
 
 If you'd like to ensure that Waris is working properly you can launch it in development. Ensure that your Wafris configuration
 or `REDIS_URL` is set, otherwise Wafris will use the default Redis connection: `localhost:6379/0`.
@@ -96,6 +88,21 @@ redis-cli HSET rules-blocked-p <path> "This is a test rule"
 Then visit this path in your browser: `http://localhost:3000/<path>` and you should see a page with
 'blocked' and a 403 status code.
 
+### 4. Setup a Redis instance
+
+To push to production you'll need to setup a Redis instance. On Heroku we've tried multiple Redis providers but found the best one to be from [RedisLabs](https://redislabs.com/).
+
+Once the instance is setup, you'll need an accessible Redis URL. You can test this connection with the following command:
+
+```sh
+redis-cli -u <REDIS_URL> PING
+```
+
+### 5. Connect on Wafris Hub
+
+Go to https://wafris.org/hub to login or create a new account. Add a new Firewall using the Redis URL you specified in step 4.
+
+
 ## Trusted Proxies
 
 If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md)
@@ -104,6 +111,8 @@ If you have Cloudflare, Expedited WAF, or another service in front of your appli
 
 For any trouble configuring Wafris please email [support@wafris.org](mailto:support@wafris.org)
 
-Or you can book at time at: https://app.harmonizely.com/expedited/wafris 
+Or you can book at time at: https://app.harmonizely.com/expedited/wafris
 
 <img src='https://uptimer.expeditedsecurity.com/wafris-rb' width='0' height='0'>
+
+[redis-url]:         https://www.iana.org/assignments/uri-schemes/prov/redis
