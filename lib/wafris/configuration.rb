@@ -7,17 +7,13 @@ module Wafris
     attr_accessor :redis
     attr_accessor :redis_pool_size
 
-    def initialize
-      @redis = Redis.new(
-        url: ENV['REDIS_URL'],
-        ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-      )
-      @redis_pool_size = 20
+    private :initialize
 
       puts "[Wafris] attempting firewall connection via REDIS_URL." unless LogSuppressor.suppress_logs?
-      create_settings
-    rescue Redis::CannotConnectError
       puts "[Wafris] firewall disabled. Cannot connect to REDIS_URL. Will attempt Wafris.configure if it exists." unless LogSuppressor.suppress_logs?
+    def initialize_with_block
+      yield self
+      @redis_pool_size = 20
     end
 
     def connection_pool

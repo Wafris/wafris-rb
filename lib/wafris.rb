@@ -12,20 +12,17 @@ require 'wafris/railtie' if defined?(Rails::Railtie)
 
 module Wafris
   class << self
-    def configure
-      yield configuration
-      puts "[Wafris] attempting firewall connection via Wafris.configure initializer." unless LogSuppressor.suppress_logs?
+    def configure(&block)
+      raise ArgumentError, "[Wafris] block is required to configure Wafris" unless block_given?
+
+      configuration.initialize_with_block(&block)
       configuration.create_settings
-    rescue Redis::CannotConnectError
       puts "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings." unless LogSuppressor.suppress_logs?
+    rescue Redis::CannotConnectError, ArgumentError
     end
 
     def configuration
-      @configuration ||= Wafris::Configuration.new
-    end
-
-    def reset
-      @configuration = Wafris::Configuration.new
+      @configuration ||= Wafris::Configuration.instance
     end
 
     def allow_request?(request)
