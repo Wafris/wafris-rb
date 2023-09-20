@@ -16,9 +16,14 @@ module Wafris
       raise ArgumentError, "[Wafris] block is required to configure Wafris" unless block_given?
 
       configuration.initialize_with_block(&block)
+      LogSuppressor.puts_log(
+        "[Wafris] attempting firewall connection via Wafris.configure initializer."
+      )
       configuration.create_settings
-      puts "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings." unless LogSuppressor.suppress_logs?
     rescue Redis::CannotConnectError, ArgumentError
+      LogSuppressor.puts_log(
+        "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings."
+      )
     end
 
     def configuration
