@@ -59,7 +59,8 @@ The key is that the `Wafris::Middleware` line shows up before the `Rack::Attack`
 
 ### 2. Set your Redis Connection
 
-Specify your [`redis://` URL][redis-url] with the following initalizer.
+Specify your [`redis://` URL][redis-url] with the following initalizer. We recommend that you store the Redis URL in an
+environment variable of your choosing rather than hard coding the string in the initializer.
 
 ```ruby
 # config/initalizers/wafris.rb
@@ -72,7 +73,7 @@ Wafris.configure do |c|
 end
 ```
 
-Note that if you're using sidekiq it defaults to the environment variable, `REDIS_URL`. So we recommend using something different.
+Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different.
 
 ### 3. Testing in Development (optional)
 
