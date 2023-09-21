@@ -68,7 +68,12 @@ environment variable of your choosing rather than hard coding the string in the 
 Wafris.configure do |c|
     c.redis = Redis.new(
       # redis://<username>:<password>@<host>:<port>
-      url: ENV['WAFRIS_REDIS_URL']
+      url: ENV['WAFRIS_REDIS_URL'],
+      # necessary if you're using an SSL connection. We do
+      # recommend enabling SSL support in production via
+      # OpenSSL::SSL::VERIFY_PEER if your redis instance
+      # supports it.
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     )
 end
 ```
