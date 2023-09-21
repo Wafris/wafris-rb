@@ -75,10 +75,18 @@ Wafris.configure do |c|
       # supports it.
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     )
+    # Max memory for your redis instance in MB. Default is 25MB.
+    c.maxmemory = 30
+    # Connection pool size for your redis instance. Default is 20.
+    c.redis_pool_size = 25
 end
 ```
 
-Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different.
+Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different especially if you're using multiple Redis instances.
+
+#### What is maxmemory and why do I need to set it?
+
+Most Redis instances you provision will come with some kind of max memory limit. When you start to approach max memory usage Wafris will shorten the key expiration and reporting window strategies.
 
 ### 3. Testing in Development (optional)
 
@@ -121,7 +129,20 @@ redis-cli -u <Redis URL> PING
 
 resulting in `PONG`
 
-### 5. Connect on Wafris Hub
+### 5. Set your Redis Key Expiration Policy
+
+When Redis hits maxmemory it will evict keys based on the expiration policy you specify.
+We recommend using the `volatile-ttl` policy. This will remove keys with expire field set to true and the shortest remaining time-to-live (TTL). We set these values in Wafris as requests are being processed.
+
+In Heroku's Redis you'll have to do this via the following command:
+
+```sh
+heroku redis:maxmemory <heroku app name>  --policy volatile-ttl
+```
+
+In Redis Labs you can do this via the UI.
+
+### 6. Connect on Wafris Hub
 
 Go to https://wafris.org/hub to login or create a new account. Add a new Firewall using the Redis URL you specified in step 4.
 

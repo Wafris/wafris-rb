@@ -34,7 +34,7 @@ module Wafris
       # This test assumes that a Redis server is running and accessible.
       it "sets the waf settings in Redis" do
         redis_mock = Minitest::Mock.new
-        redis_mock.expect(:hset, true, ['waf-settings', 'version', Wafris::VERSION, 'client', 'ruby'])
+        redis_mock.expect(:hset, true, ['waf-settings', 'version', Wafris::VERSION, 'client', 'ruby', 'maxmemory', 25])
 
         @config.redis = redis_mock
         @config.create_settings

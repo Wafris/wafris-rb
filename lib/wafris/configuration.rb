@@ -6,9 +6,11 @@ module Wafris
   class Configuration
     attr_accessor :redis
     attr_accessor :redis_pool_size
+    attr_accessor :maxmemory
 
     def initialize
       @redis_pool_size = 20
+      @maxmemory = 25
     end
 
     def connection_pool
@@ -19,7 +21,8 @@ module Wafris
     def create_settings
       redis.hset('waf-settings',
                  'version', Wafris::VERSION,
-                 'client', 'ruby')
+                 'client', 'ruby',
+                 'maxmemory', @maxmemory)
       LogSuppressor.puts_log(
         "[Wafris] firewall enabled. Connected to Redis. Ready to process requests. Set rules at: https://wafris.org/hub"
       )
