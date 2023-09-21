@@ -5,7 +5,9 @@ require 'test_helper'
 module Wafris
   describe Middleware do
     it "should allow ok requests" do
-      Wafris.reset
+      Wafris.configure do |config|
+        config.redis = Redis.new
+      end
 
       get '/'
 
@@ -13,8 +15,6 @@ module Wafris
     end
 
     it "should rescue from a standard error with a message" do
-      Wafris.reset
-
       Wafris.configure do |config|
         config.redis = Redis.new(url: 'redis://foobar')
       end

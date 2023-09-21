@@ -7,10 +7,7 @@ module Wafris
     attr_accessor :redis
     attr_accessor :redis_pool_size
 
-    private :initialize
-
-    def initialize_with_block
-      yield self
+    def initialize
       @redis_pool_size = 20
     end
 
