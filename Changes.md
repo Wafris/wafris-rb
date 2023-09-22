@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/Wafris/wafris-rb/compare/v1.1.4...v1.1.5) (2023-09-22)
+
+
+### Bug Fixes
+
+* Logs were not showing after refactor ([f5b8761](https://github.com/Wafris/wafris-rb/commit/f5b87615557130d16d1ef6c83ce871dd78746b9c))
+
 ## [1.1.4](https://github.com/Wafris/wafris-rb/compare/v1.1.3...v1.1.4) (2023-09-21)
 
 
