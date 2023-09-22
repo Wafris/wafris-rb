@@ -40,7 +40,7 @@ gem 'wafris'
 
 #### In case you have Rack::Attack
 
-If you have Rack::Attack already installed, it can workk side by side with Wafris. We recommend including Wafris before Rack::Attack so that Wafris can capture the traffic data before it is blocked.
+If you have Rack::Attack already installed, it can work side by side with Wafris. We recommend including Wafris before Rack::Attack so that Wafris can capture the traffic data before it is blocked.
 Then you can gradually migrate your rule set from Rack::Attack to Wafris and visualize the blocked traffic.
 
 To ensure the order it's as simple as including the `wafris` gem before the `rack-attack` gem.
