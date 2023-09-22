@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/Wafris/wafris-rb/compare/v1.1.3...v1.1.4) (2023-09-21)
+
+
+### Bug Fixes
+
+* Add in maxmemory to configuration so we can begin tracking memory usage ([a504973](https://github.com/Wafris/wafris-rb/commit/a5049733d4eb0a51d34d948489a1bda8e57cee48))
+* Refactor so that configuration is a singleton a requires a block ([bb93883](https://github.com/Wafris/wafris-rb/commit/bb9388315a8e6b5ff48ead2f976bfe76dc3e277d))
+
 ## [1.1.3](https://github.com/Wafris/wafris-rb/compare/v1.1.2...v1.1.3) (2023-09-19)
 
 
