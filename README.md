@@ -127,7 +127,9 @@ Once the instance is setup, you'll need an accessible Redis URL. You can test th
 redis-cli -u <Redis URL> PING
 ```
 
-resulting in `PONG`
+resulting in `PONG`.
+
+Ensure that an environment variable (named in step 2) points to this Redis URL.
 
 ### 5. Set your Redis Key Expiration Policy
 
@@ -142,7 +144,18 @@ heroku redis:maxmemory <heroku app name>  --policy volatile-ttl
 
 In Redis Labs you can do this via the UI.
 
-### 6. Connect on Wafris Hub
+### 6. Deploy your applicaiton
+
+When deploying your applicaiton you should see the following in your logs:
+
+```
+[Wafris] attempting firewall connection via Wafris.configure initializer.
+[Wafris] firewall enabled. Connected to Redis on <host from Redis URL>. Ready to process requests. Set rules at: https://wafris.org/hub
+```
+
+If the host says `localhost` then this means that there is a mismatch between the environment variable you specified in your initializer (step 2) and the environment variable defined in your target deployment (step 4).
+
+### 7. Connect on Wafris Hub
 
 Go to https://wafris.org/hub to login or create a new account. Add a new Firewall using the Redis URL you specified in step 4.
 
