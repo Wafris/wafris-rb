@@ -24,7 +24,7 @@ module Wafris
                  'client', 'ruby',
                  'maxmemory', @maxmemory)
       LogSuppressor.puts_log(
-        "[Wafris] firewall enabled. Connected to Redis. Ready to process requests. Set rules at: https://wafris.org/hub"
+        "[Wafris] firewall enabled. Connected to Redis on #{redis.connection[:host]}. Ready to process requests. Set rules at: https://wafris.org/hub"
       )
     end
 
