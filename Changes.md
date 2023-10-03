@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/Wafris/wafris-rb/compare/v1.1.5...v1.1.6) (2023-10-03)
+
+
+### Bug Fixes
+
+* update Readme and allow newer versions of Rack ([ad33c47](https://github.com/Wafris/wafris-rb/commit/ad33c47fd4ddf9da0621b5f84af55628d6eb5011))
+
 ## [1.1.5](https://github.com/Wafris/wafris-rb/compare/v1.1.4...v1.1.5) (2023-09-22)
 
 
