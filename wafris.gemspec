@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5'
 
-  s.add_runtime_dependency 'connection_pool', '~> 2.3', '>= 2.3.0'
-  s.add_runtime_dependency 'rack', '~> 2.0'
+  s.add_runtime_dependency 'connection_pool', '>= 2.3'
+  s.add_runtime_dependency 'rack', '>= 2.0'
   s.add_runtime_dependency 'redis', '>= 4.8.0'
 
   s.add_development_dependency 'minitest', '~> 5.1'

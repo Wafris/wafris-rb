@@ -69,10 +69,7 @@ Wafris.configure do |c|
     c.redis = Redis.new(
       # redis://<username>:<password>@<host>:<port>
       url: ENV['WAFRIS_REDIS_URL'],
-      # necessary if you're using an SSL connection. We do
-      # recommend enabling SSL support in production via
-      # OpenSSL::SSL::VERIFY_PEER if your redis instance
-      # supports it.
+      # necessary if you're using an SSL connection.
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     )
     # Max memory for your redis instance in MB. Default is 25MB.
@@ -86,7 +83,7 @@ Note that Redis defaults to the environment variable, `REDIS_URL`. So we recomme
 
 #### What is maxmemory and why do I need to set it?
 
-Most Redis instances you provision will come with some kind of max memory limit. When you start to approach max memory usage Wafris will shorten the key expiration and reporting window strategies.
+Most Redis instances you provision will come with some kind of max memory limit. We have features on the roadmap that will help with memory management.
 
 ### 3. Testing in Development (optional)
 
