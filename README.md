@@ -26,8 +26,14 @@ The WAF features allow you to:
 - Redis 4.8+
 - Rails 5+
 - Ruby 2.5+
+- A provisioned Redis instance. If you don't have a provisioned Redis check out [our guide on provisioning a Redis instance]('https://wafris.org/guides/provisioning-redis').
 
 If you have a previous version of one of the requirements above please let us know and we'll test it out.
+
+
+### 7. Connect on Wafris Hub
+
+Go to https://wafris.org/hub to login or create a new account.
 
 ### 1. Add the gem
 
@@ -151,10 +157,6 @@ When deploying your applicaiton you should see the following in your logs:
 ```
 
 If the host says `localhost` then this means that there is a mismatch between the environment variable you specified in your initializer (step 2) and the environment variable defined in your target deployment (step 4).
-
-### 7. Connect on Wafris Hub
-
-Go to https://wafris.org/hub to login or create a new account. Add a new Firewall using the Redis URL you specified in step 4.
 
 
 ## Trusted Proxies
