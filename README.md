@@ -29,7 +29,11 @@ The WAF features allow you to:
 
 If you have a previous version of one of the requirements above please let us know and we'll test it out.
 
-### 1. Add the gem
+### 7. Connect on Wafris Hub
+
+Go to https://wafris.org/hub to login or create a new account.
+
+### 1. Add the gem to your application
 
 Update your Gemfile to include the Wafris gem and run `bundle install`
 
@@ -72,18 +76,10 @@ Wafris.configure do |c|
       # necessary if you're using an SSL connection.
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     )
-    # Max memory for your redis instance in MB. Default is 25MB.
-    c.maxmemory = 30
-    # Connection pool size for your redis instance. Default is 20.
-    c.redis_pool_size = 25
 end
 ```
 
-Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different especially if you're using multiple Redis instances.
-
-#### What is maxmemory and why do I need to set it?
-
-Most Redis instances you provision will come with some kind of max memory limit. We have features on the roadmap that will help with memory management.
+Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different (i.e. `WAFRIS_REDIS_URL`) especially if you're using multiple Redis instances.
 
 ### 3. Testing in Development (optional)
 
@@ -114,33 +110,6 @@ redis-cli -n 13 HSET rules-blocked-p wafris-test "This is a test rule"
 Then visit this path in your browser: `http://localhost:3000/<path>` and you should see a page with
 'blocked' and a 403 status code.
 
-### 4. Setup a Redis instance
-
-To push to production you'll need to setup a Redis instance. On Heroku we've tried multiple Redis providers but found the best one to be from [RedisLabs](https://redislabs.com/).
-
-Once the instance is setup, you'll need an accessible Redis URL. You can test this connection with the following command:
-
-```sh
-redis-cli -u <Redis URL> PING
-```
-
-resulting in `PONG`.
-
-Ensure that an environment variable (named in step 2) points to this Redis URL.
-
-### 5. Set your Redis Key Expiration Policy
-
-When Redis hits maxmemory it will evict keys based on the expiration policy you specify.
-We recommend using the `volatile-ttl` policy. This will remove keys with expire field set to true and the shortest remaining time-to-live (TTL). We set these values in Wafris as requests are being processed.
-
-In Heroku's Redis you'll have to do this via the following command:
-
-```sh
-heroku redis:maxmemory <heroku app name>  --policy volatile-ttl
-```
-
-In Redis Labs you can do this via the UI.
-
 ### 6. Deploy your applicaiton
 
 When deploying your applicaiton you should see the following in your logs:
@@ -151,11 +120,6 @@ When deploying your applicaiton you should see the following in your logs:
 ```
 
 If the host says `localhost` then this means that there is a mismatch between the environment variable you specified in your initializer (step 2) and the environment variable defined in your target deployment (step 4).
-
-### 7. Connect on Wafris Hub
-
-Go to https://wafris.org/hub to login or create a new account. Add a new Firewall using the Redis URL you specified in step 4.
-
 
 ## Trusted Proxies
 
