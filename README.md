@@ -29,11 +29,11 @@ The WAF features allow you to:
 
 If you have a previous version of one of the requirements above please let us know and we'll test it out.
 
-### 7. Connect on Wafris Hub
+### 1. Connect on Wafris Hub
 
 Go to https://wafris.org/hub to login or create a new account.
 
-### 1. Add the gem to your application
+### 2. Add the gem to your application
 
 Update your Gemfile to include the Wafris gem and run `bundle install`
 
@@ -61,7 +61,7 @@ to confirm that the order is correct you can run `rake middleware` and the outpu
 
 The key is that the `Wafris::Middleware` line shows up before the `Rack::Attack` line.
 
-### 2. Set your Redis Connection
+### 3. Set your Redis Connection
 
 Specify your [`redis://` URL][redis-url] with the following initalizer. We recommend that you store the Redis URL in an
 environment variable of your choosing rather than hard coding the string in the initializer.
@@ -81,7 +81,7 @@ end
 
 Note that Redis defaults to the environment variable, `REDIS_URL`. So we recommend using something different (i.e. `WAFRIS_REDIS_URL`) especially if you're using multiple Redis instances.
 
-### 3. Testing in Development (optional)
+### Optional. Testing in Development
 
 If you'd like to ensure that Waris is working properly you can launch your application in development. You're going to visit a path
 that does not exist in your routes and would normally return a 404. Once blocked it will instead return a page with 'Blocked' and
@@ -110,7 +110,7 @@ redis-cli -n 13 HSET rules-blocked-p wafris-test "This is a test rule"
 Then visit this path in your browser: `http://localhost:3000/<path>` and you should see a page with
 'blocked' and a 403 status code.
 
-### 6. Deploy your applicaiton
+### 4. Deploy your applicaiton
 
 When deploying your applicaiton you should see the following in your logs:
 
