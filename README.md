@@ -81,20 +81,20 @@ end
 
 For more information on provisioning and managing your Redis instance, please read our [Wafris Redis Guide](https://wafris.org/guides/redis-provisioning)
 
+If you want to ensure this is working locally before you deploy check out our [testing in development guide](docs/testing-in-dev.md).
+
 ### 4. Deploy your application
 
 When deploying your application, you should see the following in your logs:
 
 ```
 [Wafris] attempting firewall connection via Wafris.configure initializer.
-[Wafris] firewall enabled. Connected to Redis on <host from Redis URL>. Ready to process requests. Set rules at: https://wafris.org/hub
+[Wafris] firewall enabled. Connected to Redis on <host from Your Redis URL>. Ready to process requests. Set rules at: https://wafris.org/hub
 ```
 
-If the host says `localhost`, then this means that there is a mismatch between the environment variable you specified in your initializer (step 2) and the environment variable defined in your target deployment (step 4).
+### Trusted Proxies
 
-## Trusted Proxies
-
-If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md)
+If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md).
 
 ## Help / Support
 
