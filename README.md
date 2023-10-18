@@ -80,8 +80,9 @@ end
 **Note:** You should not use a shared Redis instance for Wafris and other applications like Rails caching or Sidekiq.
 
 For more information on provisioning and managing your Redis instance, please read our [Wafris Redis Guide](https://wafris.org/guides/redis-provisioning)
+If you want to ensure this is working locally before you deploy check out our [Testing in Development Guide](docs/testing-in-dev.md).
 
-If you want to ensure this is working locally before you deploy check out our [testing in development guide](docs/testing-in-dev.md).
+If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md).
 
 ### 4. Deploy your application
 
@@ -91,10 +92,6 @@ When deploying your application, you should see the following in your logs:
 [Wafris] attempting firewall connection via Wafris.configure initializer.
 [Wafris] firewall enabled. Connected to Redis on <host from Your Redis URL>. Ready to process requests. Set rules at: https://wafris.org/hub
 ```
-
-### Trusted Proxies
-
-If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md).
 
 ## Help / Support
 
