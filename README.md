@@ -1,7 +1,11 @@
 # wafris-rb
 
 ## What's Wafris?
-Wafris is an open-source Web Application Firewall (WAF) that runs within Rails (and other frameworks) powered by Redis.
+Wafris is an open-source Web Application Firewall (WAF) that runs within Rails (and other frameworks) powered by Redis. 
+
+Paired with [Wafris Hub](https://wafris.org/hub), you can create rules to block malicious traffic from hitting your application.
+
+![Rules and Graph](docs/rules-and-graph.png)
 
 Need a better explanation? Read the overview at: [wafris.org](https://wafris.org)
 
@@ -17,6 +21,16 @@ The Wafris Ruby client is a gem that installs a Rack middleware into your Rails/
 - Block by CIDR ranges
 - Allow list for IPs and CIDRs
 - Detect malicious traffic patterns
+
+Get a real time view of what IPs are hitting your site and how many requests they're making.
+
+![Top IPs](docs/top-ips.png)
+
+
+Apply pre-built rule sets to your application to automatically block malicious traffic.
+
+![Rule Sets](docs/rule-sets.png)
+
 
 ## Installation and Configuration
 
@@ -57,9 +71,9 @@ Specify your [`redis://` URL][redis-url] with the following initializer. We reco
 Wafris.configure do |c|
     c.redis = Redis.new(
       url: ENV['PUT_YOUR_REDIS_URL_HERE'],
-
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-connection_pool: 10)
+      connection_pool: 10
+    )
 end
 ```
 
