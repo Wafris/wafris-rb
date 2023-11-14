@@ -29,7 +29,9 @@ module Wafris
       if Wafris.allow_request?(request)
         @app.call(env)
       else
-        puts 'blocked'
+        LogSuppressor.puts_log(
+          "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"
+        )
         [403, {}, ['Blocked']]
       end
     rescue StandardError => e
