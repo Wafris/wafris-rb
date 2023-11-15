@@ -32,7 +32,7 @@ module Wafris
         puts 'blocked'
         [403, {}, ['Blocked']]
       end
-    rescue Timeout::Error
+    rescue Redis::TimeoutError
       LogSuppressor.puts_log(
         "[Wafris] request took over a second to process. Request not stored. Request passed without rules check."
       )
