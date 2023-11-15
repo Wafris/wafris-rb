@@ -6,7 +6,7 @@ require "minitest/autorun"
 require 'rack'
 require 'rack/test'
 
-class MiniTest::Spec
+class Minitest::Spec
   include Rack::Test::Methods
 
   def app
