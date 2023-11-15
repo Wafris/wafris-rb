@@ -32,6 +32,11 @@ module Wafris
         puts 'blocked'
         [403, {}, ['Blocked']]
       end
+    rescue Timeout::Error
+      LogSuppressor.puts_log(
+        "[Wafris] request took over a second to process. Request not stored. Request passed without rules check."
+      )
+      @app.call(env)
     rescue StandardError => e
       LogSuppressor.puts_log(
         "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
