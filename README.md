@@ -50,10 +50,12 @@ Specify your redis with the following initializer. We recommend storing the Redi
 # Create this file and add the following:
 # config/initializers/wafris.rb
 
-Wafris.configure do |c|
+if ENV["WAFRIS_REDIS_URL"]
+  Wafris.configure do |c|
     c.redis = Redis.new(
-      url: ENV['PUT_YOUR_REDIS_URL_HERE']
+      url: ENV["WAFRIS_REDIS_URL"]
     )
+  end
 end
 ```
 
