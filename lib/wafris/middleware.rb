@@ -34,7 +34,7 @@ module Wafris
       end
     rescue Redis::TimeoutError
       LogSuppressor.puts_log(
-        "[Wafris] request took over a second to process. Request not stored. Request passed without rules check."
+        "[Wafris] Wafris timed out during processing. Request passed without rules check."
       )
       @app.call(env)
     rescue StandardError => e
