@@ -12,9 +12,11 @@ module Wafris
       it "allows setting attributes with a block" do
         @config.redis = "some_redis_value"
         @config.redis_pool_size = 30
+        @config.quiet_mode = true
 
         _(@config.redis).must_equal "some_redis_value"
         _(@config.redis_pool_size).must_equal 30
+        _(@config.quiet_mode).must_equal true
       end
     end
 
