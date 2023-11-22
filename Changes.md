@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.7](https://github.com/Wafris/wafris-rb/compare/v1.1.6...v1.1.7) (2023-11-22)
+
+
+### Bug Fixes
+
+* Add mock for host in failing test ([337414e](https://github.com/Wafris/wafris-rb/commit/337414edba8401662b242fb67f816699d39e83d5))
+* Fix issues with CI ([aab9b45](https://github.com/Wafris/wafris-rb/commit/aab9b45b86e680af2316497715f9d4db60a28f59))
+
 ## [1.1.6](https://github.com/Wafris/wafris-rb/compare/v1.1.5...v1.1.6) (2023-10-03)
 
 
