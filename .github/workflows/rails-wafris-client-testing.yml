@@ -20,7 +20,6 @@ jobs:
           - 6379:6379
     env:
       RAILS_ENV: test
-      DATABASE_URL: "sqlite3:///tmp/db.sqlite3"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,9 +28,6 @@ jobs:
         uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
           bundler-cache: true
-      # Add or replace database setup steps here
-      - name: Set up database schema
-        run: bin/rails db:schema:load
       # Add or replace test runners here
       - name: Run tests
-        run: bin/rake
+        run: bundle exec rake
