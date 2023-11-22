@@ -27,7 +27,19 @@ end
 
 ## 4. Modify the url to point to your Redis instance
 
-## 5. Manage SSL/TLS Redis connections
+## 5. Add timeout for request processing
+
+In instances where the Redis instance is hitting max memory performance of Wafris can suffer. As an added guard to your applications performance we recommend setting the Redis `timeout` to 250 miliseconds. You can set it to something smaller but you will potentially lose request data in your Redis instance.
+```ruby
+Wafris.configure do |c|
+    c.redis = Redis.new(
+      url: ENV['PUT_YOUR_REDIS_URL_HERE'],
+      timeout: 0.25
+    )
+end
+```
+
+## 6. Manage SSL/TLS Redis connections
 
 If you're using a self-signed certificate or a certificate that is not trusted by the Ruby runtime you'll need to add the following to your initializer:
 
@@ -42,7 +54,7 @@ end
 
 **Note:** this does not disable SSL on the connection (the data is still encrypted in flight), it disables the verfication of the certificate. For instance, Heroku uses a self-signed certificate for their Redis instances and you'll need to add this to your initializer to connect.
 
-## 6. Configure the Redis connection pool
+## 7. Configure the Redis connection pool
 
 By default Wafris will create a connection pool of 10 connections to your Redis instance. If you need to tune this you can add the following to your initializer:
 
