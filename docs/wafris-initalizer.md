@@ -68,7 +68,7 @@ Wafris.configure do |c|
 end
 ```
 
-## 7. Enable quiet mode
+## 8. Enable quiet mode
 
 By default Wafris will log status messages when a connection to the application console is opened. If you prefer to silence these messages, you can enable quiet mode:
 

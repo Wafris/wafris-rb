@@ -86,3 +86,10 @@ If you have Cloudflare, Expedited WAF, or another service in front of your appli
 <img src='https://uptimer.expeditedsecurity.com/wafris-rb' width='0' height='0'>
 
 [redis-url]: https://www.iana.org/assignments/uri-schemes/prov/redis
+
+## Credits
+
+Thanks to the following people who have contributed patches or helpful suggestions:
+
+- [Matt Swanson](https://github.com/swanson)
+- [Ron Shinall](https://github.com/ron-shinall)
