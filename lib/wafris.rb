@@ -21,7 +21,7 @@ module Wafris
       yield(configuration)
       LogSuppressor.puts_log(
         "[Wafris] attempting firewall connection via Wafris.configure initializer."
-      )
+      ) unless configuration.quiet_mode
       configuration.create_settings
     rescue Redis::CannotConnectError, ArgumentError
       LogSuppressor.puts_log(

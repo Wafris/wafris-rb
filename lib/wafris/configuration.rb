@@ -7,10 +7,12 @@ module Wafris
     attr_accessor :redis
     attr_accessor :redis_pool_size
     attr_accessor :maxmemory
+    attr_accessor :quiet_mode
 
     def initialize
       @redis_pool_size = 20
       @maxmemory = 25
+      @quiet_mode = false
     end
 
     def connection_pool
@@ -25,7 +27,7 @@ module Wafris
                  'maxmemory', @maxmemory)
       LogSuppressor.puts_log(
         "[Wafris] firewall enabled. Connected to Redis on #{redis.connection[:host]}. Ready to process requests. Set rules at: https://wafris.org/hub"
-      )
+      ) unless @quiet_mode
     end
 
     def core_sha

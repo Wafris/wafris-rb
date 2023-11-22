@@ -4,6 +4,7 @@ In your Rails app the Wafris initalizer file:
 
 - Tells Wafris where to find your Redis instance
 - Allows for tuning of the Redis connection pool
+- Allows for enabling quiet mode
 
 ## 1. Create the initializer file
 
@@ -11,9 +12,9 @@ Create a new file in your Rails app at `config/initializers/wafris.rb`
 
 ## 2. Find your Redis Connection URL
 
-Most typically this is exposed as an environment variable in your production environment. 
+Most typically this is exposed as an environment variable in your production environment.
 
-## 3. Copy the base configuration 
+## 3. Copy the base configuration
 
 Copy the following into your `wafris.rb` file:
 
@@ -67,3 +68,15 @@ Wafris.configure do |c|
 end
 ```
 
+## 7. Enable quiet mode
+
+By default Wafris will log status messages when a connection to the application console is opened. If you prefer to silence these messages, you can enable quiet mode:
+
+```ruby
+Wafris.configure do |c|
+    c.redis = Redis.new(
+      url: ENV['PUT_YOUR_REDIS_URL_HERE'],
+    )
+    c.quiet_mode = true
+end
+```
