@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
     If you haven't already, please sign up for Wafris Hub at:
 
-    https://wafris.org
+    https://github.com/Wafris/wafris-rb
 
   TEXT
 
