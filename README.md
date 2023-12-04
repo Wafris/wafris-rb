@@ -53,8 +53,12 @@ Specify your redis with the following initializer. We recommend storing the Redi
 if ENV["WAFRIS_REDIS_URL"]
   Wafris.configure do |c|
     c.redis = Redis.new(
-      url: ENV["WAFRIS_REDIS_URL"]
+      url: ENV["WAFRIS_REDIS_URL"],
+      timeout: 0.25,
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
+      connection_pool: 25
     )
+    c.quiet_mode = false
   end
 end
 ```
