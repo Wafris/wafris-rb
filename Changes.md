@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.8](https://github.com/Wafris/wafris-rb/compare/v1.1.7...v1.1.8) (2023-12-04)
+
+
+### Bug Fixes
+
+* Update info on the gemspec ([34cba36](https://github.com/Wafris/wafris-rb/commit/34cba36f013a45256fdff9bda2eeb1acbe98712a))
+
 ## [1.1.7](https://github.com/Wafris/wafris-rb/compare/v1.1.6...v1.1.7) (2023-11-22)
 
 
