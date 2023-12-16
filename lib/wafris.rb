@@ -23,13 +23,13 @@ module Wafris
         "[Wafris] attempting firewall connection via Wafris.configure initializer."
       ) unless configuration.quiet_mode
       configuration.create_settings
-    rescue Redis::CannotConnectError
-      LogSuppressor.puts_log(
-        "[Wafris] firewall disabled. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
-      )
     rescue ArgumentError
       LogSuppressor.puts_log(
         "[Wafris] block is required to configure Wafris. More info can be found at: https://github.com/Wafris/wafris-rb"
+      )
+    rescue StandardError => e
+      LogSuppressor.puts_log(
+        "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
       )
     end
 
