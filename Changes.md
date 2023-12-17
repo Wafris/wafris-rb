@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.9](https://github.com/Wafris/wafris-rb/compare/v1.1.8...v1.1.9) (2023-12-17)
+
+
+### Bug Fixes
+
+* rescue standard errors at startup ([52e1d4b](https://github.com/Wafris/wafris-rb/commit/52e1d4bed7e77766e075c60ef4254ae78bc9384a))
+
 ## [1.1.8](https://github.com/Wafris/wafris-rb/compare/v1.1.7...v1.1.8) (2023-12-04)
 
 
