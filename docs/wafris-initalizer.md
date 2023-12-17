@@ -63,8 +63,8 @@ By default Wafris will create a connection pool of 10 connections to your Redis 
 Wafris.configure do |c|
     c.redis = Redis.new(
       url: ENV['PUT_YOUR_REDIS_URL_HERE'],
-      connection_pool: 25
     )
+    c.redis_pool_size = 25
 end
 ```
 
