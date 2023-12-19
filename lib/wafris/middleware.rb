@@ -7,6 +7,10 @@ module Wafris
     end
 
     def call(env)
+      dup.call!(env)
+    end
+
+    def call!(env)
       user_defined_proxies = ENV['TRUSTED_PROXY_RANGES'].split(',') if ENV['TRUSTED_PROXY_RANGES']
 
       valid_ipv4_octet = /\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])/
@@ -24,26 +28,38 @@ module Wafris
 
       Rack::Request.ip_filter = lambda { |ip| trusted_proxies.match?(ip) }
 
-      request = Rack::Request.new(env)
+      @env = env
+      @request = Rack::Request.new(env)
 
-      if Wafris.allow_request?(request)
-        @app.call(env)
-      else
-        LogSuppressor.puts_log(
-          "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"
-        )
-        [403, {}, ['Blocked']]
-      end
+      return forbidden! unless allowed_request?
+
+      app.call(env)
+    end
+
+    private
+
+    attr_reader :app, :env, :request
+
+    def forbidden!
+      LogSuppressor.puts_log(
+        "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"
+      )
+
+      [403, {}, ['Blocked']]
+    end
+
+    def allowed_request?
+      Wafris.allow_request?(request)
     rescue Redis::TimeoutError
       LogSuppressor.puts_log(
         "[Wafris] Wafris timed out during processing. Request passed without rules check."
       )
-      @app.call(env)
+      true
     rescue StandardError => e
       LogSuppressor.puts_log(
         "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
       )
-      @app.call(env)
+      true
     end
   end
 end
