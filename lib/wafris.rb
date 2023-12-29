@@ -6,10 +6,13 @@ require 'rails'
 require 'redis'
 
 require 'wafris/configuration'
+require 'wafris/logger'
 require 'wafris/middleware'
 require 'wafris/log_suppressor'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
+
+require 'debug'
 
 module Wafris
   class << self
@@ -17,24 +20,20 @@ module Wafris
 
     extend Forwardable
     def_delegator :@configuration, :connection_pool
+    def_delegator :@configuration, :logger
 
     def configure
       raise ArgumentError unless block_given?
 
       yield(@configuration = Configuration.new)
 
-      LogSuppressor.puts_log(
-        "[Wafris] attempting firewall connection via Wafris.configure initializer."
-      ) unless configuration.quiet_mode
+      logger.info "[Wafris] attempting firewall connection via Wafris.configure initializer."
+
       configuration.create_settings
     rescue ArgumentError
-      LogSuppressor.puts_log(
-        "[Wafris] block is required to configure Wafris. More info can be found at: https://github.com/Wafris/wafris-rb"
-      )
+      Logger.info "[Wafris] block is required to configure Wafris. More info can be found at: https://github.com/Wafris/wafris-rb"
     rescue StandardError => e
-      LogSuppressor.puts_log(
-        "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
-      )
+      Logger.info "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
     end
 
     def allow_request?(request)

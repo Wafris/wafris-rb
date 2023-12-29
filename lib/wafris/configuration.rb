@@ -8,11 +8,13 @@ module Wafris
     attr_accessor :redis_pool_size
     attr_accessor :maxmemory
     attr_accessor :quiet_mode
+    attr_accessor :logger
 
     def initialize
       @redis_pool_size = 20
       @maxmemory = 25
       @quiet_mode = false
+      @logger = nil
     end
 
     def connection_pool
@@ -20,14 +22,17 @@ module Wafris
         ConnectionPool.new(size: redis_pool_size) { redis }
     end
 
+    def logger
+      @logger ||= Logger.new(quiet_mode)
+    end
+
     def create_settings
       redis.hset('waf-settings',
                  'version', Wafris::VERSION,
                  'client', 'ruby',
                  'maxmemory', @maxmemory)
-      LogSuppressor.puts_log(
-        "[Wafris] firewall enabled. Connected to Redis on #{redis.connection[:host]}. Ready to process requests. Set rules at: https://wafris.org/hub"
-      ) unless @quiet_mode
+
+      logger.info "[Wafris] firewall enabled. Connected to Redis on #{redis.connection[:host]}. Ready to process requests. Set rules at: https://wafris.org/hub"
     end
 
     def core_sha
