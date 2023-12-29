@@ -21,6 +21,7 @@ module Wafris
     extend Forwardable
     def_delegator :@configuration, :connection_pool
     def_delegator :@configuration, :logger
+    def_delegator :@configuration, :create_settings
 
     def configure
       raise ArgumentError unless block_given?
@@ -29,7 +30,7 @@ module Wafris
 
       logger.info "[Wafris] attempting firewall connection via Wafris.configure initializer."
 
-      configuration.create_settings
+      create_settings
     rescue ArgumentError
       Logger.info "[Wafris] block is required to configure Wafris. More info can be found at: https://github.com/Wafris/wafris-rb"
     rescue StandardError => e
