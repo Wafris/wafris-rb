@@ -2,17 +2,15 @@
 
 require 'connection_pool'
 require 'forwardable'
+require 'hiredis-client'
 require 'rails'
 require 'redis'
 
 require 'wafris/configuration'
 require 'wafris/logger'
 require 'wafris/middleware'
-require 'wafris/log_suppressor'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
-
-require 'debug'
 
 module Wafris
   class << self
