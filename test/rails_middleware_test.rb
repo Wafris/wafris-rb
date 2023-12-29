@@ -16,5 +16,7 @@ if defined?(Rails)
       @app.initialize!
       assert @app.middleware.include?(Wafris::Middleware)
     end
+
+    it 'is included at the second position for Rails version greater than 6'
   end
 end
