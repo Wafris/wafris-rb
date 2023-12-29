@@ -38,6 +38,7 @@ module Wafris
     def allow_request?(request)
       connection_pool.with do |conn|
         time = Time.now.utc.to_i * 1000
+
         status = conn.evalsha(
           configuration.core_sha,
           argv: [
@@ -52,11 +53,9 @@ module Wafris
           ]
         )
 
-        if status.eql? 'Blocked'
-          return false
-        else
-          return true
-        end
+        return false if status == 'Blocked'
+
+        true
       end
     end
   end
