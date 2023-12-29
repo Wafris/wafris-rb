@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'connection_pool'
+require 'forwardable'
 require 'rails'
 require 'redis'
 
@@ -14,11 +15,14 @@ module Wafris
   class << self
     attr_accessor :configuration
 
+    extend Forwardable
+    def_delegator :@configuration, :connection_pool
+
     def configure
       raise ArgumentError unless block_given?
 
-      self.configuration ||= Wafris::Configuration.new
-      yield(configuration)
+      yield(@configuration = Configuration.new)
+
       LogSuppressor.puts_log(
         "[Wafris] attempting firewall connection via Wafris.configure initializer."
       ) unless configuration.quiet_mode
@@ -34,7 +38,7 @@ module Wafris
     end
 
     def allow_request?(request)
-      configuration.connection_pool.with do |conn|
+      connection_pool.with do |conn|
         time = Time.now.utc.to_i * 1000
         status = conn.evalsha(
           configuration.core_sha,
