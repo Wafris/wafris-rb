@@ -56,6 +56,18 @@ module Wafris
         return false if status == 'Blocked'
 
         true
+      rescue Redis::TimeoutError
+        Logger.info(
+          "[Wafris] Wafris timed out during processing. Request passed without rules check."
+        )
+
+        true
+      rescue StandardError => e
+        Logger.info(
+          "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
+        )
+
+        true
       end
     end
   end
