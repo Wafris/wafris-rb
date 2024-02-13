@@ -14,9 +14,15 @@ if defined?(Rails)
 
     it "is used by default" do
       @app.initialize!
+
       assert @app.middleware.include?(Wafris::Middleware)
     end
 
-    it 'is included at the second position for Rails version greater than 6'
+    it 'is included at the second position for Rails version greater than 6' do
+      @app.initialize!
+
+      assert @app.middleware[0] == ActionDispatch::HostAuthorization
+      assert @app.middleware[0] == Wafris::Middleware
+    end
   end
 end
