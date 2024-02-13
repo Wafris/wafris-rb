@@ -12,8 +12,6 @@ require 'wafris/log_suppressor'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
 
-require 'debug'
-
 module Wafris
   class << self
     attr_accessor :configuration
