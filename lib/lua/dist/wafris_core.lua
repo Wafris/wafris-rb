@@ -1,7 +1,7 @@
 
 
 local USE_TIMESTAMPS_AS_REQUEST_IDS = false
-local EXPIRATION_IN_SECONDS = 86400
+local EXPIRATION_IN_SECONDS = tonumber(redis.call("HGET", "waf-settings", "expiration-time")) or 86400
 local EXPIRATION_OFFSET_IN_SECONDS = 3600
 
 
@@ -19,10 +19,10 @@ local function set_property_value_id_lookups(property_abbreviation, property_val
     property_id = redis.call("INCR", property_abbreviation .. "-id-counter")
     redis.call("SET", value_key, property_id)
     redis.call("SET", property_abbreviation .. "I" .. property_id, property_value)
-  else
-    redis.call("EXPIRE", value_key, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
-    redis.call("EXPIRE", property_abbreviation .. "I" .. property_id, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
   end
+
+  redis.call("EXPIRE", value_key, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
+  redis.call("EXPIRE", property_abbreviation .. "I" .. property_id, EXPIRATION_IN_SECONDS + EXPIRATION_OFFSET_IN_SECONDS)
 
   return property_id
 end
@@ -153,6 +153,7 @@ local function check_blocks(request)
   local rule_categories = {
     { category = "bi", func = ip_in_hash, args = { "rules-blocked-i", request.ip } },
     { category = "bc", func = ip_in_cidr_range, args = { "rules-blocked-cidrs-set", request.ip_decimal_lexical } },
+    { category = "bs", func = ip_in_cidr_range, args = { "rules-blocked-cidrs-subscriptions-set", request.ip_decimal_lexical } },    
     { category = "bu", func = match_by_pattern, args = { "u", request.user_agent } },
     { category = "bp", func = match_by_pattern, args = { "p", request.path } },
     { category = "ba", func = match_by_pattern, args = { "a", request.parameters } },
