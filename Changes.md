@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.10](https://github.com/Wafris/wafris-rb/compare/v1.1.9...v1.1.10) (2024-03-05)
+
+
+### Bug Fixes
+
+* ensure keys seen once are also expired ([943ff7c](https://github.com/Wafris/wafris-rb/commit/943ff7ccdfefae6db41fb8737142bfcb8efb142c))
+
 ## [1.1.9](https://github.com/Wafris/wafris-rb/compare/v1.1.8...v1.1.9) (2023-12-17)
 
 
