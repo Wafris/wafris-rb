@@ -1,3 +1,6 @@
+
+# "x-forwarded-for" -> split -> each last, check if it's int he list 
+
 # frozen_string_literal: true
 
 module Wafris
@@ -29,20 +32,12 @@ module Wafris
       if Wafris.allow_request?(request)
         @app.call(env)
       else
-        LogSuppressor.puts_log(
-          "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"
-        )
+        puts "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"        
         [403, {}, ['Blocked']]
       end
-    rescue Redis::TimeoutError
-      LogSuppressor.puts_log(
-        "[Wafris] Wafris timed out during processing. Request passed without rules check."
-      )
-      @app.call(env)
     rescue StandardError => e
-      LogSuppressor.puts_log(
-        "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
-      )
+      puts "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
+      
       @app.call(env)
     end
   end

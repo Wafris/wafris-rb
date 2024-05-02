@@ -7,7 +7,8 @@ module Wafris
     end
 
     def self.suppress_logs?
-      suppressed_environments.include?(current_environment)
+      suppressed_environments.include?(current_environment) || 
+      (ENV['WAFRIS_LOG_LEVEL'] && ENV['WAFRIS_LOG_LEVEL'] == 'silent')
     end
 
     def self.suppressed_environments
