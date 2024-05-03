@@ -38,6 +38,7 @@ module Wafris
     attr_accessor :upsync_url
     attr_accessor :upsync_interval
     attr_accessor :upsync_queue_limit
+    attr_accessor :upsync_status
     attr_accessor :local_only
 
     def initialize
@@ -127,9 +128,22 @@ module Wafris
       # This prevents the client from sending upsync requests
       # if the API key is known bad
       @upsync_status = 'Disabled'
+
+      return true
   
     end
 
+    def current_config
+
+      output = ""
+
+      instance_variables.each do |var|
+        output += "#{var} = #{instance_variable_get(var)}\n"
+      end
+
+      return output
+
+    end
 
     def create_settings
 

@@ -18,22 +18,15 @@ module Wafris
   class << self
     attr_accessor :configuration
 
-    def configure
-      raise ArgumentError unless block_given?
-
-      self.configuration ||= Wafris::Configuration.new
-      
+    def configure      
+      self.configuration ||= Wafris::Configuration.new      
       yield(configuration)
       
       LogSuppressor.puts_log("[Wafris] Configuration settings created.")
-
       configuration.create_settings
 
-    rescue ArgumentError
-      puts "[Wafris] block is required to configure Wafris. More info can be found at: https://github.com/Wafris/wafris-rb"      
-    
-      #rescue StandardError => e
-     # puts "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
+      rescue StandardError => e
+        puts "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
       
     end
 
@@ -136,20 +129,20 @@ module Wafris
         rule_id = limiter[5]
   
         # Expire old timestamps
-        @rate_limiters.each do |ip, timestamps|
+        @configuration.rate_limiters.each do |ip, timestamps|
           # Removes timestamps older than the interval
   
           
   
-          @rate_limiters[ip] = timestamps.select { |timestamp| timestamp > current_timestamp - interval }
+          @configuration.rate_limiters[ip] = timestamps.select { |timestamp| timestamp > current_timestamp - interval }
           
           # Remove the IP if there are no more timestamps for the IP
-          @rate_limiters.delete(ip) if @rate_limiters[ip].empty?
+          @configuration.rate_limiters.delete(ip) if @configuration.rate_limiters[ip].empty?
         end
   
         # Check if the IP+Method is rate limited 
   
-        if @rate_limiters[ip] && @rate_limiters[ip].length >= max_count
+        if @configuration.rate_limiters[ip] && @configuration.rate_limiters[ip].length >= max_count
           # Request is rate limited
   
           
@@ -157,10 +150,10 @@ module Wafris
   
         else
           # Request is not rate limited, so add the current timestamp
-          if @rate_limiters[ip]
-            @rate_limiters[ip] << current_timestamp              
+          if @configuration.rate_limiters[ip]
+            @configuration.rate_limiters[ip] << current_timestamp              
           else 
-            @rate_limiters[ip] = [current_timestamp]
+            @configuration.rate_limiters[ip] = [current_timestamp]
           end
   
           return false
@@ -176,13 +169,13 @@ module Wafris
         
         headers = {'Content-Type' => 'application/json'}
         body = {batch: requests_array}.to_json
-        response = HTTParty.post(@upsync_url, 
+        response = HTTParty.post(@configuration.upsync_url, 
                                  :body => body, 
                                  :headers => headers, 
                                  :timeout => 300)
         if response.code == 200
           puts "Upsync successful"
-          @upsync_status = 'Complete'
+          @configuration.upsync_status = 'Complete'
         else
           puts "Upsync Error. HTTP Response: #{response.code}"                
         end    
@@ -206,19 +199,19 @@ module Wafris
     # ex: '192.23.5.4', 'SemRush', etc.
     def queue_upsync_request(ip, user_agent, path, parameters, host, method, treatment, category, rule)
       
-      if @upsync_status != 'Disabled'
+      if @configuration.upsync_status != 'Disabled'
   
         # Add request to the queue
         request = [ip, user_agent, path, parameters, host, method, treatment, category, rule]
-        @upsync_queue << request
+        @configuration.upsync_queue << request
   
         # If the queue is full, send the requests to the upsync server
-        if @upsync_queue.length >= @upsync_queue_limit || (Time.now.to_i - @last_upsync_timestamp) >= @upsync_interval
-          requests_array = @upsync_queue
-          @upsync_queue = []
-          @last_upsync_timestamp = Time.now.to_i
+        if @configuration.upsync_queue.length >= @configuration.upsync_queue_limit || (Time.now.to_i - @configuration.last_upsync_timestamp) >= @configuration.upsync_interval
+          requests_array = @configuration.upsync_queue
+          @configuration.upsync_queue = []
+          @configuration.last_upsync_timestamp = Time.now.to_i
   
-          @upsync_status = 'Uploading'      
+          @configuration.upsync_status = 'Uploading'      
           send_upsync_requests(requests_array)
         end
   
@@ -233,7 +226,7 @@ module Wafris
     # Pulls the latest rules from the server
     def downsync_db(db_rule_category, current_filename = nil)
   
-      lockfile_path = "#{@db_file_path}/#{db_rule_category}.lockfile"
+      lockfile_path = "#{@configuration.db_file_path}/#{db_rule_category}.lockfile"
   
       puts lockfile_path
   
@@ -250,8 +243,8 @@ module Wafris
         filename = ""
   
         # Check server for new rules
-        #puts "Downloading from #{@downsync_url}/#{db_rule_category}/#{@api_key}?current_version=#{current_filename}"
-        uri = "#{@downsync_url}/#{db_rule_category}/#{@api_key}?current_version=#{current_filename}"
+        #puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}"
+        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}"
     
         response = HTTParty.get(
           uri,
@@ -260,19 +253,19 @@ module Wafris
         )
   
         if response.code == 401
-          @upsync_status = 'Disabled'
+          @configuration.upsync_status = 'Disabled'
           puts "Unauthorized: Bad or missing API key"
   
           filename = current_filename
           
         elsif response.code == 304
-          @upsync_status = 'Enabled'
+          @configuration.upsync_status = 'Enabled'
           puts "No new rules to download"
     
           filename = current_filename
           
         elsif response.code == 200
-          @upsync_status = 'Disabled'
+          @configuration.upsync_status = 'Disabled'
   
           if current_filename
             old_file_name = current_filename
@@ -283,16 +276,16 @@ module Wafris
           filename = content_disposition.match(/filename="(.+)"/)[1]
     
           # Save the body of the response to a new SQLite file      
-          File.open(@db_file_path + "/" + filename, 'wb') { |file| file.write(response.body) }
+          File.open(@configuration.db_file_path + "/" + filename, 'wb') { |file| file.write(response.body) }
           
           # Write the filename into the db_category.modfile
-          File.open("#{@db_file_path}/#{db_rule_category}.modfile", 'w') { |file| file.write(filename) }
+          File.open("#{@configuration.db_file_path}/#{db_rule_category}.modfile", 'w') { |file| file.write(filename) }
     
           # Remove the old database file      
           if old_file_name 
-            #puts "Removing old file: #{@db_file_path}/#{old_file_name}"
-            if File.exist?(@db_file_path + "/" + old_file_name)
-              File.delete(@db_file_path + "/" + old_file_name) 
+            #puts "Removing old file: #{@configuration.db_file_path}/#{old_file_name}"
+            if File.exist?(@configuration.db_file_path + "/" + old_file_name)
+              File.delete(@configuration.db_file_path + "/" + old_file_name) 
             end
           end
           
@@ -306,12 +299,12 @@ module Wafris
       ensure
     
         # Reset the modified time of the modfile
-        unless File.exist?("#{@db_file_path}/#{db_rule_category}.modfile")
-          File.new("#{@db_file_path}/#{db_rule_category}.modfile", 'w')
+        unless File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.modfile")
+          File.new("#{@configuration.db_file_path}/#{db_rule_category}.modfile", 'w')
         end
   
         # Set the modified time of the modfile to the current time
-        File.utime(Time.now, Time.now, "#{@db_file_path}/#{db_rule_category}.modfile")
+        File.utime(Time.now, Time.now, "#{@configuration.db_file_path}/#{db_rule_category}.modfile")
     
         # Ensure the lockfile is removed after operations
         lockfile.close
@@ -329,26 +322,26 @@ module Wafris
     def current_db(db_rule_category)
         
       if db_rule_category == 'custom_rules'
-        interval = @downsync_custom_rules_interval
+        interval = @configuration.downsync_custom_rules_interval
       else 
-        interval = @downsync_data_subscriptions_interval
+        interval = @configuration.downsync_data_subscriptions_interval
       end 
   
       # Checks for existing current modfile, which contains the current db filename
-      if File.exist?("#{@db_file_path}/#{db_rule_category}.modfile")
+      if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.modfile")
   
-        #puts "Modfile exists: #{@db_file_path}/#{db_rule_category}.modfile"
+        puts "Modfile exists: #{@configuration.db_file_path}/#{db_rule_category}.modfile"
   
         # Get last Modified Time and current database file name
-        last_db_synctime = File.mtime("#{@db_file_path}/#{db_rule_category}.modfile").to_i
-        returned_db = File.read("#{@db_file_path}/#{db_rule_category}.modfile").strip
+        last_db_synctime = File.mtime("#{@configuration.db_file_path}/#{db_rule_category}.modfile").to_i
+        returned_db = File.read("#{@configuration.db_file_path}/#{db_rule_category}.modfile").strip
   
         # Check if the db file is older than the interval      
         if (Time.now.to_i - last_db_synctime) > interval
-          #puts "DB file is older than the interval"
+          puts "DB file is older than the interval"
   
           # Make sure that another process isn't already downloading the rules
-          if !File.exist?("#{@db_file_path}/#{db_rule_category}.lockfile")
+          if !File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
             returned_db = downsync_db(db_rule_category, returned_db)        
           end
   
@@ -357,7 +350,7 @@ module Wafris
         # Current db is up to date
         else 
   
-          returned_db = File.read("#{@db_file_path}/#{db_rule_category}.modfile").strip
+          returned_db = File.read("#{@configuration.db_file_path}/#{db_rule_category}.modfile").strip
   
           # If the modfile is empty (no db file name), return nil
           # this can happen if the the api key is bad
@@ -372,9 +365,11 @@ module Wafris
       # No modfile exists, so download the latest db
       else 
   
+        puts "Modfile does not exist: #{@configuration.db_file_path}/#{db_rule_category}.modfile"
+
         # Make sure that another process isn't already downloading the rules
-        if File.exist?("#{@db_file_path}/#{db_rule_category}.lockfile")
-          # Lockfile exists, but not modfile with a db filename
+        if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
+          # Lockfile exists, but no modfile with a db filename
           return nil
         else
   
@@ -398,7 +393,11 @@ module Wafris
     # This is the main loop that evaluates the request
     # as well as sorts out when downsync and upsync should be called
     def evaluate(ip, user_agent, path, parameters, host, method)
-  
+        @configuration ||= Wafris::Configuration.new
+
+        ap @configuration
+
+
         rules_db_filename = current_db('custom_rules')
         data_subscriptions_db_filename = current_db('data_subscriptions')
   
@@ -488,19 +487,6 @@ module Wafris
       
     end # end evaluate
   
-  
-
-    def allow_request?(request)
-
-      status = "foo"
-
-        if status.eql? 'Blocked'
-          return false
-        else
-          return true
-        end
-      
-    end
 
   end
 end

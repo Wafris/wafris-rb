@@ -3,9 +3,10 @@
 require 'test_helper'
 
 module Wafris
-  
-
-    # Works with no api key (passes )
-
-  
+  describe Middleware do
+    it "should pass requests if no API key" do
+      get '/'
+      _(last_response.status).must_equal 200
+    end
+  end
 end

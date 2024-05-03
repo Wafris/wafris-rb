@@ -2,6 +2,7 @@
 
 require 'test_helper'
 
+
 if !ENV['WAFRIS_LOG_LEVEL']
   puts "\n\nSet WAFRIS_LOG_LEVEL to 'silent' to suppress log output in test.\n\n"
 end
@@ -186,6 +187,7 @@ describe Wafris do
     end
 
   end
+
 
 
 end

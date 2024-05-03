@@ -5,6 +5,9 @@ require "wafris"
 require "minitest/autorun"
 require 'rack'
 require 'rack/test'
+require 'webmock'
+require 'webmock/minitest'
+require 'fakefs/safe'
 
 class Minitest::Spec
   include Rack::Test::Methods

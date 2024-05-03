@@ -1,7 +1,7 @@
 
-# "x-forwarded-for" -> split -> each last, check if it's int he list 
-
 # frozen_string_literal: true
+
+require 'wafris'
 
 module Wafris
   class Middleware
@@ -29,16 +29,32 @@ module Wafris
 
       request = Rack::Request.new(env)
 
-      if Wafris.allow_request?(request)
-        @app.call(env)
-      else
-        puts "[Wafris] Blocked: #{request.ip} #{request.request_method} #{request.host} #{request.url}}"        
-        [403, {}, ['Blocked']]
-      end
-    rescue StandardError => e
-      puts "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
+      # Forcing UTF-8 encoding on all strings for Sqlite3 compatibility
+      ip = request.ip.force_encoding('UTF-8')
+      user_agent = request.user_agent.force_encoding('UTF-8')
+      path = request.path.force_encoding('UTF-8')    
+      parameters = Rack::Utils.build_query(request.params).force_encoding('UTF-8')
+      host = request.host.to_s.force_encoding('UTF-8')      
+      request_method = String.new(request.request_method).force_encoding('UTF-8')
       
+      # Submitted for evaluation
+      treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method)
+
+      # These values match what the client tests expect (200, 404, 403, 500
+      if treatment == 'Allowed' || treatment == 'Passed'
+        @app.call(env)        
+      elsif treatment == 'Blocked'
+        [403, { 'content-type' => 'text/plain' }, ['Blocked']]
+      else
+        #ap request 
+        [500, { 'content-type' => 'text/plain' }, ['Error']]
+      end
+
+    rescue StandardError => e
+
+      LogSuppressor.puts_log "[Wafris] Error in Middleware: #{e.message}"
       @app.call(env)
+
     end
   end
 end
