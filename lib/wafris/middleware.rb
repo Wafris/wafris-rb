@@ -39,6 +39,15 @@ module Wafris
         "[Wafris] Wafris timed out during processing. Request passed without rules check."
       )
       @app.call(env)
+    rescue NoMethodError => e
+      if e.message.include?("undefined method `connection_pool'")
+        LogSuppressor.puts_log(
+          "[Wafris] Wafris is not configured. Please check your configuration settings. Request passed without rules check. More info can be found at: https://github.com/Wafris/wafris-rb"
+        )
+      else
+        raise e
+      end
+      @app.call(env)
     rescue StandardError => e
       LogSuppressor.puts_log(
         "[Wafris] Redis connection error: #{e.message}. Request passed without rules check."
