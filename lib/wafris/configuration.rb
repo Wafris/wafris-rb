@@ -48,7 +48,7 @@ module Wafris
         @api_key = ENV['WAFRIS_API_KEY']        
       else
         @api_key = nil
-        LogSuppressor.puts_log("Firewall disabled as API key not set")        
+        LogSuppressor.puts_log("Firewall disabled as neither local only or API key set")        
       end
 
       # DB FILE PATH LOCATION - Optional
@@ -56,13 +56,13 @@ module Wafris
         @db_file_path = ENV['WAFRIS_DB_FILE_PATH']      
       else
         #@db_file_path = Rails.root.join('tmp', 'wafris').to_s
-        @db_file_path = 'tmp/wafris'
+        @db_file_path = './tmp/wafris'
       end
 
-      # Verify that the db_file_path exists
+      # Ensure that the db_file_path exists
       unless File.directory?(@db_file_path)
         LogSuppressor.puts_log("DB File Path does not exist - creating it now.")
-        Dir.mkdir(@db_file_path) unless File.exists?(@db_file_path)
+        FileUtils.mkdir_p(@db_file_path) unless File.exist?(@db_file_path)
       end
 
       # DB FILE NAME - For local
@@ -135,10 +135,10 @@ module Wafris
 
     def current_config
 
-      output = ""
+      output = {}
 
       instance_variables.each do |var|
-        output += "#{var} = #{instance_variable_get(var)}\n"
+        output[var.to_s] = instance_variable_get(var)
       end
 
       return output

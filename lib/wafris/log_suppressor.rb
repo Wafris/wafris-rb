@@ -3,7 +3,7 @@
 module Wafris
   class LogSuppressor
     def self.puts_log(message)
-      puts(message) unless suppress_logs?
+      puts("[Wafris] " + message) unless suppress_logs?
     end
 
     def self.suppress_logs?

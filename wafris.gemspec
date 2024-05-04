@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sqlite3'
   s.add_dependency 'ipaddr'
   s.add_dependency 'httparty'
+  s.add_dependency 'awesome_print'
 
   s.add_development_dependency 'minitest', '~> 5.1'
   s.add_development_dependency 'pry', '~> 0.14', '>= 0.14.1'
@@ -35,5 +36,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'railties', '>= 5.0'
   s.add_development_dependency 'rake', '>= 12.0'
   s.add_development_dependency 'webmock', '>= 0.49'
-  s.add_development_dependency 'fakefs', '>= 0.9'
+
+  
 end

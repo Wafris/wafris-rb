@@ -6,6 +6,7 @@ require 'rails'
 require 'sqlite3'
 require 'ipaddr'
 require 'httparty'
+require 'awesome_print'
 
 require 'wafris/configuration'
 require 'wafris/middleware'
@@ -18,16 +19,18 @@ module Wafris
   class << self
     attr_accessor :configuration
 
-    def configure      
-      self.configuration ||= Wafris::Configuration.new      
-      yield(configuration)
-      
-      LogSuppressor.puts_log("[Wafris] Configuration settings created.")
-      configuration.create_settings
+    def configure
+      begin
+        self.configuration ||= Wafris::Configuration.new      
+        yield(configuration)
+        
+        LogSuppressor.puts_log("[Wafris] Configuration settings created.")
+        configuration.create_settings
 
       rescue StandardError => e
         puts "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
-      
+      end 
+
     end
 
 
@@ -213,11 +216,15 @@ module Wafris
   
           @configuration.upsync_status = 'Uploading'      
           send_upsync_requests(requests_array)
+        else 
+          puts "Request queued: #{ip} #{treatment} #{category} #{rule}"
+          puts "Queue length: " + @configuration.upsync_queue.length.to_s
         end
   
         # Return the treatment - used to return 403 or 200
         return treatment
       else
+        puts "Upsync is disabled. Returning 'Passed'"
         return "Passed"
       end
   
@@ -395,19 +402,10 @@ module Wafris
     def evaluate(ip, user_agent, path, parameters, host, method)
         @configuration ||= Wafris::Configuration.new
 
-        ap @configuration
-
+        ap @configuration.current_config
 
         rules_db_filename = current_db('custom_rules')
         data_subscriptions_db_filename = current_db('data_subscriptions')
-  
-        ap "Rules path: #{rules_db_filename}"
-        ap "Rules path nil: #{rules_db_filename.nil?}"
-        ap "Rules path empty: #{rules_db_filename.to_s.strip == ''}"
-  
-        ap "Data Subscriptions path: #{data_subscriptions_db_filename}"
-        ap "Data Subscriptions path nil: #{data_subscriptions_db_filename.nil?}"
-        ap "Data Subscriptions path empty: #{data_subscriptions_db_filename.to_s.strip == ''}"
   
   
         if rules_db_filename.to_s.strip != '' && data_subscriptions_db_filename.strip.to_s.strip != ''

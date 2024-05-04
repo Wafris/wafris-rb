@@ -45,7 +45,7 @@ module Wafris
       it "sets default values if api key set" do        
         
         _(@config.api_key).must_be_nil
-        _(@config.db_file_path).must_equal 'tmp/wafris'
+        _(@config.db_file_path).must_equal './tmp/wafris'
         _(@config.db_file_name).must_equal 'wafris.db'
         _(@config.downsync_custom_rules_interval).must_equal 60
         _(@config.downsync_data_subscriptions_interval).must_equal 86400
