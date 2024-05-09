@@ -172,7 +172,21 @@ module Wafris
       begin
         
         headers = {'Content-Type' => 'application/json'}
-        body = {batch: requests_array}.to_json
+
+        if Rails && Rails.application
+          framework = 'rails'
+        else
+          framework = 'rack'
+        end
+
+        body = {
+          meta: {
+            version: Wafris::VERSION,
+            client: 'wafris-rb',
+            framework: framework
+          },
+          batch: requests_array
+        }.to_json
 
         url_and_api_key = @configuration.upsync_url + '/' + @configuration.api_key
 
@@ -180,7 +194,7 @@ module Wafris
                                  :body => body, 
                                  :headers => headers, 
                                  :timeout => 300)
-                                 
+
         if response.code == 200
           puts "Upsync successful"
           @configuration.upsync_status = 'Complete'
