@@ -26,7 +26,7 @@ module Wafris
         @config.downsync_custom_rules_interval = 600
         @config.downsync_data_subscriptions_interval = 864
         @config.downsync_url = 'https://example.com/v2/downsync'
-        @config.upsync_url = 'https://example.com/v2/upsync/' + @config.api_key
+        @config.upsync_url = 'https://example.com/v2/upsync'
         @config.upsync_interval = 600
         @config.upsync_queue_limit = 10
 
@@ -37,12 +37,12 @@ module Wafris
         _(@config.downsync_custom_rules_interval).must_equal 600
         _(@config.downsync_data_subscriptions_interval).must_equal 864
         _(@config.downsync_url).must_equal 'https://example.com/v2/downsync'
-        _(@config.upsync_url).must_equal 'https://example.com/v2/upsync/' + @config.api_key
+        _(@config.upsync_url).must_equal 'https://example.com/v2/upsync'
         _(@config.upsync_interval).must_equal 600
         _(@config.upsync_queue_limit).must_equal 10
       end
 
-      it "sets default values if api key set" do        
+      it "sets default values" do        
         
         _(@config.api_key).must_be_nil
         _(@config.db_file_path).must_equal './tmp/wafris'
@@ -50,7 +50,7 @@ module Wafris
         _(@config.downsync_custom_rules_interval).must_equal 60
         _(@config.downsync_data_subscriptions_interval).must_equal 86400
         _(@config.downsync_url).must_equal 'https://distributor.wafris.org/v2/downsync'
-        _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync/'
+        _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync'
         _(@config.upsync_interval).must_equal 60
         _(@config.upsync_queue_limit).must_equal 1000
 

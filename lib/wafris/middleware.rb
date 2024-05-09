@@ -51,7 +51,8 @@ module Wafris
 
     rescue StandardError => e
 
-      LogSuppressor.puts_log "[Wafris] Error in Middleware: #{e.message}"
+      LogSuppressor.puts_log "[Wafris] Detailed Error: #{e.class} - #{e.message}"
+      LogSuppressor.puts_log "[Wafris] Backtrace: #{e.backtrace.join("\n")}"
       @app.call(env)
 
     end

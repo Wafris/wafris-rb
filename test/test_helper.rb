@@ -5,9 +5,6 @@ require "wafris"
 require "minitest/autorun"
 require 'rack'
 require 'rack/test'
-require 'webmock'
-require 'webmock/minitest'
-require 'fakefs/safe'
 
 class Minitest::Spec
   include Rack::Test::Methods
@@ -28,6 +25,11 @@ class Minitest::Spec
     env_vars.each do |var|
       ENV[var] = nil
     end
+  end
+
+  # Removes sync'd databases, lockfiles and modfiles
+  def remove_cache_directory
+    FileUtils.rm_rf('tmp')
   end
 
   def app

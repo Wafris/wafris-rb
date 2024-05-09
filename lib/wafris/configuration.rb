@@ -1,8 +1,21 @@
 
 # Wafris setup and logs
 
-# - No startup messages in dev or test or CI environments
-# - Way to disable WAF in v2 (disabled?)
+  # - No startup messages in dev or test or CI environments
+  # - Way to disable WAF in v2 (disabled?)
+
+# Proper Behavior
+
+  # No API Key
+    # - No lockfile
+    # - No modfile
+    # - No db file
+
+
+
+
+
+
 
 # API Key
 
@@ -14,6 +27,8 @@
   # - No API key
     # - Honeybadger says no api key in dev
     # - Quiet mode on startup -> show no messages at startup
+
+
 
 # Verbose mode?
 # - 1st time setup
@@ -40,6 +55,7 @@ module Wafris
     attr_accessor :upsync_queue_limit
     attr_accessor :upsync_status
     attr_accessor :local_only
+    attr_accessor :last_upsync_timestamp
 
     def initialize
 
@@ -94,13 +110,13 @@ module Wafris
       else
         @downsync_url = 'https://distributor.wafris.org/v2/downsync'
       end
-  
+      
       # UPSYNC - Optional
       # Set Upsync URL
       if ENV['WAFRIS_UPSYNC_URL']
-        @upsync_url = ENV['WAFRIS_UPSYNC_URL'] + '/' + @api_key
+        @upsync_url = ENV['WAFRIS_UPSYNC_URL']
       else
-        @upsync_url = 'https://collector.wafris.org/v2/upsync/' + @api_key.to_s
+        @upsync_url = 'https://collector.wafris.org/v2/upsync' 
       end
   
       # Set Upsync Interval - Optional

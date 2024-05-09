@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rails', '>= 6.0'
   s.add_development_dependency 'railties', '>= 5.0'
   s.add_development_dependency 'rake', '>= 12.0'
-  s.add_development_dependency 'webmock', '>= 0.49'
+
 
   
 end

@@ -1,5 +1,3 @@
-
-
 require 'test_helper'
 
 if !ENV['WAFRIS_LOG_LEVEL']
@@ -10,33 +8,82 @@ describe Wafris do
 
   before do
     # Reset environment variables before each test
-    reset_environment_variables    
-    @current_custom_rule_db_file = nil
-    @current_data_subscription_db_file = nil
+    reset_environment_variables
     
+    # Remove all cached files
+    remove_cache_directory
+
+    # Using Localhost Hub for testing, should be changed to production
+    @downsync_url = 'http://localhost:3000/v2/downsync'
+    @upsync_url = 'http://localhost:3000/v2/upsync/'
+
   end
 
   describe "Custom data should work from a cold start" do
 
-    it "should confirm Modfiles exist" do
-      assert(File.exist?("tmp/custom_rules.modfile"))
-      assert(File.exist?("tmp/data_subscriptions.modfile"))
-    end
-    
-    it "should confirm Modfiles contain correct db filenames" do
-      assert(File.read("tmp/custom_rules.modfile").include?(".db"))
-      assert(File.read("tmp/data_subscriptions.modfile").include?(".db"))
-    end
-    
-    it "should confirm Custom Rules Lockfile cleanup" do
-      refute(File.exist?("tmp/custom_rules.lockfile"))
-    end
-    
-    it "should confirm Data Subscription Lockfile cleanup" do
-      refute(File.exist?("tmp/data_subscriptions.lockfile"))
+    it "should confirm no files at cold start" do
+      refute(Dir.glob("tmp/wafris/*.db").any?)
+      refute(File.exist?("tmp/wafris/custom_rules.modfile"))
+      refute(File.exist?("tmp/wafris/data_subscriptions.modfile"))      
     end
 
+    it "shouldn't raise exceptions if no API Key" do
+      Wafris.configure do |config|
+        config.api_key = nil
+        config.downsync_url = @downsync_url
+        config.upsync_url = @upsync_url
+      end
+  
+      Wafris.downsync_db('custom_rules', nil)      
+    end
+      
+    it "should successfully downsync data subscription with a good API key" do
+      Wafris.configure do |config|
+        config.api_key = 'wafris-client-test-api-key'
+        config.downsync_url = @downsync_url
+        config.upsync_url = @upsync_url
+      end
 
+      # Simulate a successful downsync operation
+      db_rule_category = 'data_subscriptions'
+      current_filename = nil
+      lockfile_path = "#{Wafris.configuration.db_file_path}/#{db_rule_category}.lockfile"
+      modfile_path = "#{Wafris.configuration.db_file_path}/#{db_rule_category}.modfile"      
+
+      # Perform the downsync
+      Wafris.downsync_db(db_rule_category, current_filename)
+
+      # Check if the lockfile, modfile, and db file are created successfully
+      assert File.exist?(modfile_path), "Modfile was not created"
+
+      # Read the value in the modfile
+      db_file_name = File.read(modfile_path)    
+      #ap Wafris.configuration.db_file_path
+      #ap db_file_name
+      assert File.exist?(File.join(Wafris.configuration.db_file_path, db_file_name)), "DB file was not created"
+      
+      refute File.exist?(lockfile_path), "Lockfile should not exist"
+
+    end
+
+    
+
+    # Custom Rules
+      # Should create a lockfile
+      # Should create a modfile
+      # Should do something if api key is bad or error
+      # Should create a db file if success
+      # Should remove lockfile if success
+      
+    # Data Subscriptions
+      # Should create a lockfile
+      # Should create a modfile
+      # Should do something if api key is bad or error
+      # Should create a db file if success
+      # Should remove lockfile if success
+      
+    # Current DB
+      # Should refresh at interval
   end
 
 
