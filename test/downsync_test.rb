@@ -13,10 +13,6 @@ describe Wafris do
     # Remove all cached files
     remove_cache_directory
 
-    # Using Localhost Hub for testing, should be changed to production
-    @downsync_url = 'http://localhost:3000/v2/downsync'
-    @upsync_url = 'http://localhost:3000/v2/upsync/'
-
   end
 
   describe "Custom data should work from a cold start" do
@@ -30,8 +26,6 @@ describe Wafris do
     it "shouldn't raise exceptions if no API Key" do
       Wafris.configure do |config|
         config.api_key = nil
-        config.downsync_url = @downsync_url
-        config.upsync_url = @upsync_url
       end
   
       Wafris.downsync_db('custom_rules', nil)      
@@ -40,8 +34,6 @@ describe Wafris do
     it "should successfully downsync data subscription with a good API key" do
       Wafris.configure do |config|
         config.api_key = 'wafris-client-test-api-key'
-        config.downsync_url = @downsync_url
-        config.upsync_url = @upsync_url
       end
 
       # Simulate a successful downsync operation

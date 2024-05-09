@@ -221,8 +221,9 @@ module Wafris
     # ex: '192.23.5.4', 'SemRush', etc.
     def queue_upsync_request(ip, user_agent, path, parameters, host, method, treatment, category, rule)
       
-      if @configuration.upsync_status != 'Disabled'
-  
+      if @configuration.upsync_status != 'Disabled' || @configuration.upsync_status != 'Uploading'
+        @configuration.upsync_status = 'Uploading'
+
         # Add request to the queue
         request = [ip, user_agent, path, parameters, host, method, treatment, category, rule]
         @upsync_queue << request
@@ -233,7 +234,7 @@ module Wafris
           @upsync_queue = []
           @configuration.last_upsync_timestamp = Time.now.to_i
   
-          @configuration.upsync_status = 'Uploading'      
+          
           send_upsync_requests(requests_array)
         else 
           puts "Request queued: #{ip} #{treatment} #{category} #{rule}"
@@ -294,7 +295,7 @@ module Wafris
           filename = current_filename
           
         elsif response.code == 200
-          @configuration.upsync_status = 'Disabled'
+          @configuration.upsync_status = 'Enabled'
   
           if current_filename
             old_file_name = current_filename

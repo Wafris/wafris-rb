@@ -29,6 +29,7 @@ module Wafris
         @config.upsync_url = 'https://example.com/v2/upsync'
         @config.upsync_interval = 600
         @config.upsync_queue_limit = 10
+        @config.upsync_queue = ['foo']
 
         # Custom values are set        
         _(@config.api_key).must_equal "some_api_key"
@@ -40,6 +41,7 @@ module Wafris
         _(@config.upsync_url).must_equal 'https://example.com/v2/upsync'
         _(@config.upsync_interval).must_equal 600
         _(@config.upsync_queue_limit).must_equal 10
+        _(@config.upsync_queue).must_equal ['foo']
       end
 
       it "sets default values" do        
@@ -53,6 +55,7 @@ module Wafris
         _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync'
         _(@config.upsync_interval).must_equal 60
         _(@config.upsync_queue_limit).must_equal 1000
+        _(@config.upsync_queue).must_equal []
 
       end
 

@@ -54,6 +54,7 @@ module Wafris
     attr_accessor :upsync_interval
     attr_accessor :upsync_queue_limit
     attr_accessor :upsync_status
+    attr_accessor :upsync_queue
     attr_accessor :local_only
     attr_accessor :last_upsync_timestamp
 
@@ -133,7 +134,7 @@ module Wafris
         @upsync_queue_limit = 1000
       end
   
-      # Upsync Queue
+      # Upsync Queue Defaults
       @upsync_queue = []
       @last_upsync_timestamp = Time.now.to_i
   
