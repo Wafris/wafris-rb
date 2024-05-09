@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.post_install_message   = <<-TEXT
     Thank you for installing the Wafris gem.
 
-    Get your API key and set rules at https://hub.wafris.org
+    Get your API key and set firewall rules at https://hub.wafris.org
 
   TEXT
 
