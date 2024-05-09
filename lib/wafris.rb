@@ -26,8 +26,6 @@ module Wafris
         LogSuppressor.puts_log("[Wafris] Configuration settings created.")
         configuration.create_settings
 
-        @upsync_queue = []
-
       rescue StandardError => e
         puts "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
       end 
@@ -226,24 +224,26 @@ module Wafris
 
         # Add request to the queue
         request = [ip, user_agent, path, parameters, host, method, treatment, category, rule]
-        @upsync_queue << request
+        @configuration.upsync_queue << request
   
         # If the queue is full, send the requests to the upsync server
-        if @upsync_queue.length >= @configuration.upsync_queue_limit || (Time.now.to_i - @configuration.last_upsync_timestamp) >= @configuration.upsync_interval
-          requests_array = @upsync_queue
-          @upsync_queue = []
+        if @configuration.upsync_queue.length >= @configuration.upsync_queue_limit || (Time.now.to_i - @configuration.last_upsync_timestamp) >= @configuration.upsync_interval
+          requests_array = @configuration.upsync_queue
+          @configuration.upsync_queue = []
           @configuration.last_upsync_timestamp = Time.now.to_i
   
           
           send_upsync_requests(requests_array)
         else 
           puts "Request queued: #{ip} #{treatment} #{category} #{rule}"
-          puts "Queue length: " + @upsync_queue.length.to_s
+          puts "Queue length: " + @configuration.upsync_queue.length.to_s
         end
   
+        @configuration.upsync_status = 'Enabled'
         # Return the treatment - used to return 403 or 200
         return treatment
       else
+        @configuration.upsync_status = 'Enabled'
         puts "Upsync is disabled. Returning 'Passed'"
         return "Passed"
       end

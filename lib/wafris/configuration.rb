@@ -163,11 +163,7 @@ module Wafris
     end
 
     def create_settings
-
       @version = Wafris::VERSION
-
-      LogSuppressor.puts_log("[Wafris] Firewall launched successfully. Ready to process requests. Set rules at: https://hub.wafris.org/")
-      
     end
 
   end
