@@ -284,8 +284,8 @@ module Wafris
   
         if response.code == 401
           @configuration.upsync_status = 'Disabled'
-          puts "Unauthorized: Bad or missing API key"
-  
+          LogSuppressor.puts_log("Unauthorized: Bad or missing API key")
+          LogSuppressor.puts_log("API Key: #{@configuration.api_key}")
           filename = current_filename
           
         elsif response.code == 304
@@ -422,10 +422,12 @@ module Wafris
   
     # This is the main loop that evaluates the request
     # as well as sorts out when downsync and upsync should be called
-    def evaluate(ip, user_agent, path, parameters, host, method)
+    def evaluate(ip, user_agent, path, parameters, host, method, headers, body)
         @configuration ||= Wafris::Configuration.new
 
         ap @configuration.current_config
+
+
 
         if @configuration.api_key.nil?          
           return "Passed"
