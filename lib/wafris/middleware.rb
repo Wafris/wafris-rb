@@ -37,7 +37,10 @@ module Wafris
       request_method = String.new(request.request_method).force_encoding('UTF-8')
       
       # Submitted for evaluation
-      treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method)
+      headers = request.headers.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') }
+      body = request.body.read.force_encoding('UTF-8')
+
+      treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method, headers, body)
 
       # These values match what the client tests expect (200, 404, 403, 500
       if treatment == 'Allowed' || treatment == 'Passed'

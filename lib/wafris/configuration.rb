@@ -57,6 +57,7 @@ module Wafris
     attr_accessor :upsync_queue
     attr_accessor :local_only
     attr_accessor :last_upsync_timestamp
+    attr_accessor :max_body_size_mb
 
     def initialize
 
@@ -134,6 +135,13 @@ module Wafris
         @upsync_queue_limit = 1000
       end
   
+      # Set Maximium Body Size for Requests - Optional (in Megabytes)
+      if ENV['WAFRIS_MAX_BODY_SIZE_MB'] && ENV['WAFRIS_MAX_BODY_SIZE_MB'].to_i > 0  
+        @max_body_size_mb = ENV['WAFRIS_MAX_BODY_SIZE_MB'].to_i
+      else
+        @max_body_size_mb = 10
+      end
+
       # Upsync Queue Defaults
       @upsync_queue = []
       @last_upsync_timestamp = Time.now.to_i

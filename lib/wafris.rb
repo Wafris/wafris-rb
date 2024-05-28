@@ -416,8 +416,6 @@ module Wafris
   
       end 
   
-      
-  
     end
   
     # This is the main loop that evaluates the request
@@ -426,8 +424,6 @@ module Wafris
         @configuration ||= Wafris::Configuration.new
 
         ap @configuration.current_config
-
-
 
         if @configuration.api_key.nil?          
           return "Passed"
@@ -440,7 +436,6 @@ module Wafris
     
             rules_db = SQLite3::Database.new "#{@configuration.db_file_path}/#{rules_db_filename}"
             data_subscriptions_db = SQLite3::Database.new "#{@configuration.db_file_path}/#{data_subscriptions_db_filename}"
-    
 
             # Allowed IPs
             if exact_match(ip, 'allowed_ips', rules_db)
