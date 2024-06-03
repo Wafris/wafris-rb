@@ -9,11 +9,11 @@ This readme covers the steps to testing and making changes to the Wafris RB clie
 
 2. Navigate to the `test/dummy` directory
 
-3. Remove any Wafris environment variables: `bash ./remove-env-vars.sh`
+3. From `test/dummy` run 
 
-4. Set target environment variables: `source ./set-dev-env-vars.sh`
+`WAFRIS_API_KEY='wafris-client-test-api-key' rerun -d ../../ 'rails server -p 3333'`
 
-5. From `test/dummy` run `rerun -d ../../ 'rails server -p 3333'` - this will relaunch the Rails app whenever a file changes in the wafris-rb gem.
+This will relaunch the Rails app whenever a file changes in the wafris-rb gem.
 
 # Testing API Key
 
@@ -23,6 +23,11 @@ This will let you use the production (default) Downsync and Upsync endpoints wit
 
 # Testing Endpoints
 
+Use the Wafris Client Tests - https://github.com/Wafris/wafris-client-tests to test the endpoints. 
 
+# Dummy application should be configured to:
+
+- Allow `GET` and `POST` requests `/`
+- Allow `example.com` and `blocked.com` hosts in development 
 
 

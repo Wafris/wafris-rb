@@ -37,7 +37,7 @@ module Wafris
       request_method = String.new(request.request_method).force_encoding('UTF-8')
       
       # Submitted for evaluation
-      headers = request.headers.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') }
+      headers = env.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') if k.start_with?('HTTP_') }
       body = request.body.read.force_encoding('UTF-8')
 
       treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method, headers, body)

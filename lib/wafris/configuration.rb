@@ -1,44 +1,4 @@
 
-# Wafris setup and logs
-
-  # - No startup messages in dev or test or CI environments
-  # - Way to disable WAF in v2 (disabled?)
-
-# Proper Behavior
-
-  # No API Key
-    # - No lockfile
-    # - No modfile
-    # - No db file
-
-
-
-
-
-
-
-# API Key
-
-  # - Local only mode "local_only" (TBD)
-    # - No upsync
-  # - Bad API key (checked on initial downsync)
-    # - No upsync 
-
-  # - No API key
-    # - Honeybadger says no api key in dev
-    # - Quiet mode on startup -> show no messages at startup
-
-
-
-# Verbose mode?
-# - 1st time setup
-# - Startup success
-# - Downsync success
-# - Upsync success
-
-
-# frozen_string_literal: true
-
 require_relative 'version'
 
 module Wafris
@@ -58,6 +18,7 @@ module Wafris
     attr_accessor :local_only
     attr_accessor :last_upsync_timestamp
     attr_accessor :max_body_size_mb
+    attr_accessor :rate_limiters
 
     def initialize
 
