@@ -35,12 +35,18 @@ module Wafris
       parameters = Rack::Utils.build_query(request.params).force_encoding('UTF-8')
       host = request.host.to_s.force_encoding('UTF-8')      
       request_method = String.new(request.request_method).force_encoding('UTF-8')
-      
+
       # Submitted for evaluation
       headers = env.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') if k.start_with?('HTTP_') }
       body = request.body.read.force_encoding('UTF-8')
 
-      treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method, headers, body)
+      request_id = env.fetch('action_dispatch.request_id', SecureRandom.uuid.to_s)
+      request_timestamp = Time.now.utc.to_i
+
+      ap "Request id: #{request_id}"
+      ap "Request timestamp: #{request_timestamp}"
+
+      treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method, headers, body, request_id, request_timestamp)
 
       # These values match what the client tests expect (200, 404, 403, 500
       if treatment == 'Allowed' || treatment == 'Passed'
