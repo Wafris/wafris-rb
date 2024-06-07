@@ -38,7 +38,7 @@ module Wafris
 
       # Submitted for evaluation
       headers = env.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') if k.start_with?('HTTP_') }
-      body = request.body.read.force_encoding('UTF-8')
+      body = request.body.read
 
       request_id = env.fetch('action_dispatch.request_id', SecureRandom.uuid.to_s)
       request_timestamp = Time.now.utc.to_i
