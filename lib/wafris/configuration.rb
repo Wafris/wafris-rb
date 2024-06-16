@@ -63,7 +63,7 @@ module Wafris
       if ENV['WAFRIS_DOWNSYNC_DATA_SUBSCRIPTIONS_INTERVAL'] 
         @downsync_data_subscriptions_interval = ENV['WAFRIS_DOWNSYNC_DATA_SUBSCRIPTIONS_INTERVAL'].to_i
       else
-        @downsync_data_subscriptions_interval = 86400
+        @downsync_data_subscriptions_interval = 60
       end
   
       # Set Downsync URL - Optional
@@ -86,14 +86,14 @@ module Wafris
       if ENV['WAFRIS_UPSYNC_INTERVAL']
         @upsync_interval = ENV['WAFRIS_UPSYNC_INTERVAL'].to_i
       else
-        @upsync_interval = 60
+        @upsync_interval = 10
       end
     
       # Set Upsync Queued Request Limit - Optional
       if ENV['WAFRIS_UPSYNC_QUEUE_LIMIT']
         @upsync_queue_limit = ENV['WAFRIS_UPSYNC_QUEUE_LIMIT'].to_i
       else
-        @upsync_queue_limit = 1000
+        @upsync_queue_limit = 250
       end
   
       # Set Maximium Body Size for Requests - Optional (in Megabytes)
