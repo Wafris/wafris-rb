@@ -308,13 +308,23 @@ module Wafris
           # Write the filename into the db_category.modfile
           File.open("#{@configuration.db_file_path}/#{db_rule_category}.modfile", 'w') { |file| file.write(filename) }
     
-          # Remove the old database file      
-          if old_file_name 
-            #puts "Removing old file: #{@configuration.db_file_path}/#{old_file_name}"
-            if File.exist?(@configuration.db_file_path + "/" + old_file_name)
-              File.delete(@configuration.db_file_path + "/" + old_file_name) 
-            end
+          # Sanity check that the downloaded db file has tables
+          # not empty or corrupted
+          db = SQLite3::Database.new @configuration.db_file_path + "/" + filename          
+          if db.execute("SELECT name FROM sqlite_master WHERE type='table';").any?
+              # Remove the old database file      
+              if old_file_name                 
+                if File.exist?(@configuration.db_file_path + "/" + old_file_name)
+                File.delete(@configuration.db_file_path + "/" + old_file_name) 
+                end
+              end
+
+          # DB file is bad or empty
+          else
+            filename = old_file_name
+            LogSuppressor.puts_log("DB Error - No tables exist in the db file #{@configuration.db_file_path}/#{filename}")
           end
+
           
         end
     
