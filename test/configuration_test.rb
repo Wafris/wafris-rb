@@ -50,7 +50,7 @@ module Wafris
         _(@config.db_file_path).must_equal './tmp/wafris'
         _(@config.db_file_name).must_equal 'wafris.db'
         _(@config.downsync_custom_rules_interval).must_equal 60
-        _(@config.downsync_data_subscriptions_interval).must_equal 86400
+        _(@config.downsync_data_subscriptions_interval).must_equal 60
         _(@config.downsync_url).must_equal 'https://distributor.wafris.org/v2/downsync'
         _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync'
         _(@config.upsync_interval).must_equal 60

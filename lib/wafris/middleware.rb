@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 
@@ -8,7 +7,9 @@ module Wafris
       @app = app
     end
 
+    
     def call(env)
+
       user_defined_proxies = ENV['TRUSTED_PROXY_RANGES'].split(',') if ENV['TRUSTED_PROXY_RANGES']
 
       valid_ipv4_octet = /\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])/
@@ -27,10 +28,23 @@ module Wafris
       Rack::Request.ip_filter = lambda { |ip| trusted_proxies.match?(ip) }
 
       request = Rack::Request.new(env)
-
       # Forcing UTF-8 encoding on all strings for Sqlite3 compatibility
-      ip = request.ip.force_encoding('UTF-8')
-      user_agent = request.user_agent.force_encoding('UTF-8')
+
+      # List of possible IP headers in order of priority
+      ip_headers = [
+        'HTTP_X_REAL_IP', 
+        'HTTP_X_TRUE_CLIENT_IP', 
+        'HTTP_FLY_CLIENT_IP', 
+        'HTTP_CF_CONNECTING_IP'
+      ]
+
+      # Find the first header that is present in the environment
+      ip_header = ip_headers.find { |header| env[header] }
+
+      # Use the found header or fallback to remote_ip if none of the headers are present
+      ip = (ip_header ? env[ip_header] : request.ip).force_encoding('UTF-8')
+
+      user_agent = request.user_agent ? request.user_agent.force_encoding('UTF-8') : nil
       path = request.path.force_encoding('UTF-8')    
       parameters = Rack::Utils.build_query(request.params).force_encoding('UTF-8')
       host = request.host.to_s.force_encoding('UTF-8')      
