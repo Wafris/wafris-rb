@@ -32,7 +32,6 @@ module Wafris
 
     end
 
-
     def zero_pad(number, length)
       number.to_s.rjust(length, "0")
     end
@@ -510,6 +509,66 @@ module Wafris
         end # end api_key.nil?
     end # end evaluate
   
+    def debug(api_key)
 
+      if ENV['WAFRIS_API_KEY']
+        puts "Wafris API Key environment variable is set."
+        puts " - API Key: #{ENV['WAFRIS_API_KEY']}"
+      else
+        puts "Wafris API Key environment variable is not set."
+      end
+
+      puts "\n"
+      puts "Wafris Configuration:"
+
+      Wafris.configure do |config|
+        config.api_key = api_key
+      end
+
+      settings = Wafris.configuration
+
+      settings.instance_variables.each do |ivar|
+        puts " - #{ivar}: #{Wafris.configuration.instance_variable_get(ivar)}"
+      end
+
+      puts "\n"
+      if File.exist?(settings.db_file_path + "/" + "custom_rules.lockfile")
+        puts "Custom Rules Lockfile: #{settings.db_file_path}/custom_rules.lockfile exists"
+        puts " - Last Modified Time: #{File.mtime(settings.db_file_path + "/" + "custom_rules.lockfile")}"
+      else
+        puts "Custom Rules Lockfile: #{settings.db_file_path}/custom_rules.lockfile does not exist."
+      end
+
+      puts "\n"
+      if File.exist?(settings.db_file_path + "/" + "custom_rules.modfile")
+        puts "Custom Rules Modfile: #{settings.db_file_path}/custom_rules.modfile exists"
+        puts " - Last Modified Time: #{File.mtime(settings.db_file_path + "/" + "custom_rules.modfile")}"
+        puts " - Contents: #{File.open(settings.db_file_path + "/" + "custom_rules.modfile", 'r').read}"
+      else
+        puts "Custom Rules Modfile: #{settings.db_file_path}/custom_rules.modfile does not exist."
+      end
+
+      puts "\n"
+      if File.exist?(settings.db_file_path + "/" + "data_subscriptions.lockfile")
+        puts "Data Subscriptions Lockfile: #{settings.db_file_path}/data_subscriptions.lockfile exists"
+        puts " - Last Modified Time: #{File.mtime(settings.db_file_path + "/" + "data_subscriptions.lockfile")}"
+      else
+        puts "Data Subscriptions Lockfile: #{settings.db_file_path}/data_subscriptions.lockfile does not exist."
+      end
+
+      puts "\n"
+      if File.exist?(settings.db_file_path + "/" + "data_subscriptions.modfile")
+        puts "Data Subscriptions Modfile: #{settings.db_file_path}/data_subscriptions.modfile exists"
+        puts " - Last Modified Time: #{File.mtime(settings.db_file_path + "/" + "data_subscriptions.modfile")}"
+        puts " - Contents: #{File.open(settings.db_file_path + "/" + "data_subscriptions.modfile", 'r').read}"
+      else
+        puts "Data Subscriptions Modfile: #{settings.db_file_path}/data_subscriptions.modfile does not exist."
+      end
+
+
+
+      return true
+    end
+  
   end
 end

@@ -26,8 +26,9 @@ module Wafris
       if ENV['WAFRIS_API_KEY']
         @api_key = ENV['WAFRIS_API_KEY']        
       else
-        @api_key = nil
-        LogSuppressor.puts_log("Firewall disabled as neither local only or API key set")        
+        unless @api_key         
+          LogSuppressor.puts_log("Firewall disabled as neither local only or API key set")        
+        end
       end
 
       # DB FILE PATH LOCATION - Optional
