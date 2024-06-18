@@ -57,9 +57,6 @@ module Wafris
       request_id = env.fetch('action_dispatch.request_id', SecureRandom.uuid.to_s)
       request_timestamp = Time.now.utc.to_i
 
-      ap "Request id: #{request_id}"
-      ap "Request timestamp: #{request_timestamp}"
-
       treatment = Wafris.evaluate(ip, user_agent, path, parameters, host, request_method, headers, body, request_id, request_timestamp)
 
       # These values match what the client tests expect (200, 404, 403, 500

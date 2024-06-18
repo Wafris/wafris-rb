@@ -319,7 +319,7 @@ module Wafris
                 end
               end
 
-          # DB file is bad or empty
+          # DB file is bad or empty so keep using whatever we have now
           else
             filename = old_file_name
             LogSuppressor.puts_log("DB Error - No tables exist in the db file #{@configuration.db_file_path}/#{filename}")
