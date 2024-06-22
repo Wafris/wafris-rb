@@ -369,13 +369,20 @@ module Wafris
       # Checks for existing current modfile, which contains the current db filename
       if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.modfile")
   
+        LogSuppressor.puts_log("[Wafris][Downsync] Modfile exists, skipping downsync")
+
         # Get last Modified Time and current database file name
         last_db_synctime = File.mtime("#{@configuration.db_file_path}/#{db_rule_category}.modfile").to_i
         returned_db = File.read("#{@configuration.db_file_path}/#{db_rule_category}.modfile").strip
   
+        LogSuppressor.puts_log("[Wafris][Downsync] Modfile Last Modified Time: #{last_db_synctime}")
+        LogSuppressor.puts_log("[Wafris][Downsync] DB in Modfile: #{returned_db}")        
+
         # Check if the db file is older than the interval      
         if (Time.now.to_i - last_db_synctime) > interval
   
+          LogSuppressor.puts_log("[Wafris][Downsync] DB is older than the interval")
+
           # Make sure that another process isn't already downloading the rules
           if !File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
             returned_db = downsync_db(db_rule_category, returned_db)        
@@ -386,6 +393,8 @@ module Wafris
         # Current db is up to date
         else 
   
+          LogSuppressor.puts_log("[Wafris][Downsync] DB is up to date")
+
           returned_db = File.read("#{@configuration.db_file_path}/#{db_rule_category}.modfile").strip
   
           # If the modfile is empty (no db file name), return nil
@@ -401,12 +410,16 @@ module Wafris
       # No modfile exists, so download the latest db
       else 
   
+        LogSuppressor.puts_log("[Wafris][Downsync] No modfile exists, downloading latest db")
+
         # Make sure that another process isn't already downloading the rules
         if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
+          LogSuppressor.puts_log("[Wafris][Downsync] Lockfile exists, skipping downsync")
           # Lockfile exists, but no modfile with a db filename
           return nil
         else
   
+          LogSuppressor.puts_log("[Wafris][Downsync] No modfile exists, downloading latest db")
           # No modfile exists, so download the latest db
           returned_db = downsync_db(db_rule_category, nil)
   
