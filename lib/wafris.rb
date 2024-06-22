@@ -258,10 +258,10 @@ module Wafris
       begin
         lockfile = File.open(lockfile_path, File::RDWR|File::CREAT|File::EXCL)
       rescue Errno::EEXIST
-        LogSuppressor.puts_log("Lockfile already exists, skipping downsync.")
+        LogSuppressor.puts_log("[Wafris][Downsync] Lockfile already exists, skipping downsync.")
         return
       rescue Exception => e
-        LogSuppressor.puts_log("EXCEPTION: Error creating lockfile: #{e.message}")
+        LogSuppressor.puts_log("[Wafris][Downsync] Error creating lockfile: #{e.message}")
       end
   
       begin
@@ -283,13 +283,13 @@ module Wafris
 
         if response.code == 401
           @configuration.upsync_status = 'Disabled'
-          LogSuppressor.puts_log("Unauthorized: Bad or missing API key")
-          LogSuppressor.puts_log("API Key: #{@configuration.api_key}")
+          LogSuppressor.puts_log("[Wafris][Downsync] Unauthorized: Bad or missing API key")
+          LogSuppressor.puts_log("[Wafris][Downsync] API Key: #{@configuration.api_key}")
           filename = current_filename
           
         elsif response.code == 304
           @configuration.upsync_status = 'Enabled'
-          LogSuppressor.puts_log("No new rules to download")
+          LogSuppressor.puts_log("[Wafris][Downsync] No new rules to download")
     
           filename = current_filename
           
@@ -324,14 +324,14 @@ module Wafris
           # DB file is bad or empty so keep using whatever we have now
           else
             filename = old_file_name
-            LogSuppressor.puts_log("DB Error - No tables exist in the db file #{@configuration.db_file_path}/#{filename}")
+            LogSuppressor.puts_log("[Wafris][Downsync] DB Error - No tables exist in the db file #{@configuration.db_file_path}/#{filename}")
           end
 
           
         end
     
       rescue Exception => e
-        puts "EXCEPTION: Error downloading rules: #{e.message}"
+        LogSuppressor.puts_log("[Wafris][Downsync] Error downloading rules: #{e.message}")
   
       # This gets set even if the API key is bad or other issues
       # to prevent hammering the distribution server on every request
