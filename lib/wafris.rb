@@ -390,8 +390,8 @@ module Wafris
   
           # If the modfile is empty (no db file name), return nil
           # this can happen if the the api key is bad
-          if returned_db == ""
-            return nil
+          if returned_db == ''
+            return ''
           else
             return returned_db
           end
