@@ -54,7 +54,7 @@ module Wafris
         _(@config.downsync_url).must_equal 'https://distributor.wafris.org/v2/downsync'
         _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync'
         _(@config.upsync_interval).must_equal 10
-        _(@config.upsync_queue_limit).must_equal 1000
+        _(@config.upsync_queue_limit).must_equal 250
         _(@config.upsync_queue).must_equal []
 
       end

@@ -268,9 +268,9 @@ module Wafris
         # Actual Downsync operations
         filename = ""
   
-        # Check server for new rules
-        #puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}"
-        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}"
+        # Check server for new rules including process id
+        #puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
+        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
     
         response = HTTParty.get(
           uri,
@@ -278,6 +278,9 @@ module Wafris
           max_redirects: 2          # Maximum number of redirects to follow
         )
   
+        # TODO: What to do if timeout
+        # TODO: What to do if error        
+
         if response.code == 401
           @configuration.upsync_status = 'Disabled'
           LogSuppressor.puts_log("Unauthorized: Bad or missing API key")
