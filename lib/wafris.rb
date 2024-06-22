@@ -270,7 +270,7 @@ module Wafris
   
         # Check server for new rules including process id
         #puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
-        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
+        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Socket.gethostname}-#{Process.pid}"
     
         response = HTTParty.get(
           uri,
