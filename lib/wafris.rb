@@ -169,9 +169,9 @@ module Wafris
         headers = {'Content-Type' => 'application/json'}
 
         if Rails && Rails.application
-          framework = 'rails'
+          framework = "Rails v#{Rails::VERSION::STRING}"
         else
-          framework = 'rack'
+          framework = "Rack v#{Rack::VERSION::STRING}"
         end
 
         body = {
@@ -268,9 +268,24 @@ module Wafris
         # Actual Downsync operations
         filename = ""
   
+        if Rails && Rails.application
+          framework = "Rails v#{Rails::VERSION::STRING}"
+        else
+          framework = "Rack v#{Rack::VERSION::STRING}"
+        end
+
+        data = {
+          client_db: current_filename,
+          process_id: Process.pid,
+          hostname: Socket.gethostname,
+          version: Wafris::VERSION,
+          client: 'wafris-rb',
+          framework: framework
+        }
+
         # Check server for new rules including process id
         #puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
-        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}&hostname=#{Socket.gethostname}"
+        uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?#{data.to_query}"
     
         response = HTTParty.get(
           uri,
