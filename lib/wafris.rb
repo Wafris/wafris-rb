@@ -315,9 +315,9 @@ module Wafris
             old_file_name = current_filename
           end
     
-          # Extract the filename from the response
-          content_disposition = response.headers['content-disposition']
-          filename = content_disposition.match(/filename="(.+)"/)[1]
+          # Extract the filename from the response        
+          content_disposition = response.headers['content-disposition']          
+          filename = content_disposition.split('filename=')[1].strip
     
           # Save the body of the response to a new SQLite file      
           File.open(@configuration.db_file_path + "/" + filename, 'wb') { |file| file.write(response.body) }
