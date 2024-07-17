@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/Wafris/wafris-rb/compare/v1.1.11...v2.0.0) (2024-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* SQLite Release and migration instructions
+
+### Features
+
+* SQLite Release and migration instructions ([c08dcbc](https://github.com/Wafris/wafris-rb/commit/c08dcbcb52abf16477ec81a5a1d9d9348f8e0d13))
+
 ## [1.1.11](https://github.com/Wafris/wafris-rb/compare/v1.1.10...v1.1.11) (2024-05-03)
 
 
