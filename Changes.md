@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.11](https://github.com/Wafris/wafris-rb/compare/v1.1.10...v1.1.11) (2024-05-03)
+
+
+### Bug Fixes
+
+* More explicit message in case someone has setup the Wafris config with the env gate ([05ce3eb](https://github.com/Wafris/wafris-rb/commit/05ce3eb2b613341cc6028e179a272d4a655bc900))
+
 ## [1.1.10](https://github.com/Wafris/wafris-rb/compare/v1.1.9...v1.1.10) (2024-03-05)
 
 
