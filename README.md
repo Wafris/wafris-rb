@@ -1,7 +1,7 @@
 # Wafris for Ruby/Rails 
 Wafris is an open-source Web Application Firewall (WAF) that runs within Rails (and other frameworks) powered by Redis. 
 
-Paired with [Wafris Hub](https://wafris.org/hub), you can create rules to block malicious traffic from hitting your application.
+Paired with [Wafris Hub](https://hub.wafris.org), you can view your site traffic in real time and and create rules to block malicious traffic from hitting your application.
 
 ![Rules and Graph](docs/rules-and-graph.png)
 
@@ -16,10 +16,9 @@ Need a better explanation? Read the overview at: [wafris.org](https://wafris.org
 
 ## Installation and Configuration
 
-The Wafris Ruby client is a gem that installs a Rack middleware into your Rails/Sinatra/Rack application that communicates with a Redis instance.
+The Wafris Ruby client is a gem that installs a Rack middleware into your Rails/Sinatra/Rack application filtering requests based on your created rules.
 
 ### Requirements
-- Redis-rb 4.8+
 - Rails 5+
 - Ruby 2.5+
 
@@ -42,40 +41,9 @@ Update your Gemfile to include the Wafris gem and run
 gem 'wafris'
 ```
 
-### 3. Set your Redis Connection
+### 3. Set your API Key
 
-Specify your redis with the following initializer. We recommend storing the Redis URL as an environment variable or in a secret management system of your choosing rather than hard coding the string in the initializer.
-
-```ruby
-# Create this file and add the following:
-# config/initializers/wafris.rb
-
-if ENV["WAFRIS_REDIS_URL"]
-  Wafris.configure do |c|
-    c.redis = Redis.new(
-      url: ENV["WAFRIS_REDIS_URL"],
-      timeout: 0.25,
-      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-    )
-    c.redis_pool_size = 25
-    c.quiet_mode = false
-  end
-end
-```
-
-For more details and troubleshooting on the initializer, please read our [Wafris Initializer Guide](docs/wafris-initalizer.md).
-
-Not sure what Redis provider to use? Please read our [Wafris Redis Providers Guide](https://wafris.org/guides/redis-provisioning)
-
-
-### 4. Deploy your application
-
-When deploying your application, you should see the following in your logs:
-
-```
-[Wafris] attempting firewall connection via Wafris.configure initializer.
-[Wafris] firewall enabled. Connected to Redis on <host from Redis URL>. Ready to process requests. Set rules at: https://wafris.org/hub
-```
+In your production environment, you'll need to set the `WAFRIS_API_KEY` environment variable to your API key. When you sign up on [Wafris Hub](https://hub.wafris.org), you'll receive your API key along with per-platform instructions.
 
 ## Trusted Proxies
 
