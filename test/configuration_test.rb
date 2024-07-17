@@ -1,49 +1,81 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'awesome_print'
 
 module Wafris
   describe Configuration do
+
     before do
+      # Reset environment variables before each test
+      reset_environment_variables
       @config = Configuration.new
     end
 
+    after do
+      # Clean up or reset environment variables after each test
+      reset_environment_variables
+    end
+
     describe "#initialize" do
-      it "allows setting attributes with a block" do
-        @config.redis = "some_redis_value"
-        @config.redis_pool_size = 30
-        @config.quiet_mode = true
 
-        _(@config.redis).must_equal "some_redis_value"
-        _(@config.redis_pool_size).must_equal 30
-        _(@config.quiet_mode).must_equal true
+      it "allows setting attributes with a block" do        
+        @config.api_key = 'some_api_key'
+        @config.db_file_path = "/some/path"        
+        @config.db_file_name = "wafris.db"
+        @config.downsync_custom_rules_interval = 600
+        @config.downsync_data_subscriptions_interval = 864
+        @config.downsync_url = 'https://example.com/v2/downsync'
+        @config.upsync_url = 'https://example.com/v2/upsync'
+        @config.upsync_interval = 600
+        @config.upsync_queue_limit = 10
+        @config.upsync_queue = ['foo']
+
+        # Custom values are set        
+        _(@config.api_key).must_equal "some_api_key"
+        _(@config.db_file_path).must_equal "/some/path"        
+        _(@config.db_file_name).must_equal "wafris.db"
+        _(@config.downsync_custom_rules_interval).must_equal 600
+        _(@config.downsync_data_subscriptions_interval).must_equal 864
+        _(@config.downsync_url).must_equal 'https://example.com/v2/downsync'
+        _(@config.upsync_url).must_equal 'https://example.com/v2/upsync'
+        _(@config.upsync_interval).must_equal 600
+        _(@config.upsync_queue_limit).must_equal 10
+        _(@config.upsync_queue).must_equal ['foo']
       end
+
+      it "sets default values" do        
+        
+        _(@config.api_key).must_be_nil
+        _(@config.db_file_path).must_equal './tmp/wafris'
+        _(@config.db_file_name).must_equal 'wafris.db'
+        _(@config.downsync_custom_rules_interval).must_equal 60
+        _(@config.downsync_data_subscriptions_interval).must_equal 60
+        _(@config.downsync_url).must_equal 'https://distributor.wafris.org/v2/downsync'
+        _(@config.upsync_url).must_equal 'https://collector.wafris.org/v2/upsync'
+        _(@config.upsync_interval).must_equal 10
+        _(@config.upsync_queue_limit).must_equal 250
+        _(@config.upsync_queue).must_equal []
+
+      end
+
+      it "config setting takes precedence over env var setting" do
+
+
+        # Set API Key via ENV
+        ENV['WAFRIS_API_KEY'] = '1234'
+        @env_config = Configuration.new
+        _(@env_config.api_key).must_equal '1234'
+
+        # Override with config setting
+        @env_config.api_key = '5678'
+        _(@env_config.api_key).must_equal '5678'
+
+      end
+
     end
 
-    describe "#connection_pool" do
-      it "uses the set pool size" do
-        @config.redis_pool_size = 10
 
-        _(@config.connection_pool.size).must_equal 10
-      end
 
-      it "should default connection pool size" do
-        _(@config.connection_pool.size).must_equal 20
-      end
-    end
-
-    describe "#create_settings" do
-      # This test assumes that a Redis server is running and accessible.
-      it "sets the waf settings in Redis" do
-        redis_mock = Minitest::Mock.new
-        redis_mock.expect(:hset, true, ['waf-settings', 'version', Wafris::VERSION, 'client', 'ruby', 'maxmemory', 25])
-        redis_mock.expect(:connection, { host: 'localhost' })
-
-        @config.redis = redis_mock
-        @config.create_settings
-
-        redis_mock.verify
-      end
-    end
   end
 end
