@@ -7,7 +7,7 @@ module Wafris
       @app = app
     end
 
-    
+
     def call(env)
 
       user_defined_proxies = ENV['TRUSTED_PROXY_RANGES'].split(',') if ENV['TRUSTED_PROXY_RANGES']
@@ -32,9 +32,9 @@ module Wafris
 
       # List of possible IP headers in order of priority
       ip_headers = [
-        'HTTP_X_REAL_IP', 
-        'HTTP_X_TRUE_CLIENT_IP', 
-        'HTTP_FLY_CLIENT_IP', 
+        'HTTP_X_REAL_IP',
+        'HTTP_X_TRUE_CLIENT_IP',
+        'HTTP_FLY_CLIENT_IP',
         'HTTP_CF_CONNECTING_IP'
       ]
 
@@ -42,16 +42,16 @@ module Wafris
       ip_header = ip_headers.find { |header| env[header] }
 
       # Use the found header or fallback to remote_ip if none of the headers are present
-      ip = (ip_header ? env[ip_header] : request.ip).force_encoding('UTF-8')
+      ip = (ip_header ? env[ip_header] : request.ip).dup.force_encoding('UTF-8')
 
-      user_agent = request.user_agent ? request.user_agent.force_encoding('UTF-8') : nil
-      path = request.path.force_encoding('UTF-8')    
+      user_agent = request.user_agent&.dup&.force_encoding('UTF-8')
+      path = request.path.dup.force_encoding('UTF-8')
       parameters = Rack::Utils.build_query(request.params).force_encoding('UTF-8')
-      host = request.host.to_s.force_encoding('UTF-8')      
-      request_method = String.new(request.request_method).force_encoding('UTF-8')
+      host = request.host.to_s.dup.force_encoding('UTF-8')
+      request_method = request.request_method.dup.force_encoding('UTF-8')
 
       # Submitted for evaluation
-      headers = env.each_with_object({}) { |(k, v), h| h[k] = v.force_encoding('UTF-8') if k.start_with?('HTTP_') }
+      headers = env.each_with_object({}) { |(k, v), h| h[k] = v.dup.force_encoding('UTF-8') if k.start_with?('HTTP_') }
       body = request.body.read
 
       request_id = env.fetch('action_dispatch.request_id', SecureRandom.uuid.to_s)
@@ -61,11 +61,11 @@ module Wafris
 
       # These values match what the client tests expect (200, 404, 403, 500
       if treatment == 'Allowed' || treatment == 'Passed'
-        @app.call(env)        
+        @app.call(env)
       elsif treatment == 'Blocked'
         [403, { 'content-type' => 'text/plain' }, ['Blocked']]
       else
-        #ap request 
+        #ap request
         [500, { 'content-type' => 'text/plain' }, ['Error']]
       end
 
