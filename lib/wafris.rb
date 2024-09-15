@@ -10,6 +10,7 @@ require 'awesome_print'
 require 'wafris/configuration'
 require 'wafris/middleware'
 require 'wafris/log_suppressor'
+require 'wafris/proxy_filter'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
 ActiveSupport::Deprecation.behavior = :silence
