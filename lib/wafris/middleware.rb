@@ -9,21 +9,9 @@ module Wafris
 
     def call(env)
       request = Rack::Request.new(env)
-      # Forcing UTF-8 encoding on all strings for Sqlite3 compatibility
+      ip = IpResolver.new(request).resolve
 
-      # List of possible IP headers in order of priority
-      ip_headers = [
-        'HTTP_X_REAL_IP',
-        'HTTP_X_TRUE_CLIENT_IP',
-        'HTTP_FLY_CLIENT_IP',
-        'HTTP_CF_CONNECTING_IP'
-      ]
 
-      # Find the first header that is present in the environment
-      ip_header = ip_headers.find { |header| env[header] }
-
-      # Use the found header or fallback to remote_ip if none of the headers are present
-      ip = (ip_header ? env[ip_header] : request.ip).dup.force_encoding('UTF-8')
 
       user_agent = request.user_agent&.dup&.force_encoding('UTF-8')
       path = request.path.dup.force_encoding('UTF-8')

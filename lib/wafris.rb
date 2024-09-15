@@ -11,6 +11,7 @@ require 'wafris/configuration'
 require 'wafris/middleware'
 require 'wafris/log_suppressor'
 require 'wafris/proxy_filter'
+require 'wafris/ip_resolver'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
 ActiveSupport::Deprecation.behavior = :silence
