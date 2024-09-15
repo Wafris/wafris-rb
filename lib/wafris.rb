@@ -14,7 +14,6 @@ require 'wafris/ip_resolver'
 require 'wafris/wafris_request'
 
 require 'wafris/railtie' if defined?(Rails::Railtie)
-ActiveSupport::Deprecation.behavior = :silence
 
 module Wafris
   class << self
