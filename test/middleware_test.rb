@@ -28,5 +28,29 @@ module Wafris
       get '/'
       _(last_response.status).must_equal 200
     end
+
+    it 'returns 403 when treatment is Blocked' do
+      mocked_app = ->(env) { [200, {}, ['OK']] }
+      middleware = Wafris::Middleware.new(mocked_app)
+    
+      Wafris.stub :evaluate, 'Blocked' do
+        status, headers, body = middleware.call(Rack::MockRequest.env_for('/'))
+        assert_equal 403, status
+        assert_equal 'text/plain', headers['content-type']
+        assert_equal ['Blocked'], body
+      end
+    end
+
+    it 'returns 500 when treatment is unknown' do
+      mocked_app = ->(env) { [200, {}, ['OK']] }
+      middleware = Wafris::Middleware.new(mocked_app)
+    
+      Wafris.stub :evaluate, 'Unknown' do
+        status, headers, body = middleware.call(Rack::MockRequest.env_for('/'))
+        assert_equal 500, status
+        assert_equal 'text/plain', headers['content-type']
+        assert_equal ['Error'], body
+      end
+    end
   end
 end
