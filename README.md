@@ -78,3 +78,4 @@ Thanks to the following people who have contributed patches or helpful suggestio
 
 - [Matt Swanson](https://github.com/swanson)
 - [Ron Shinall](https://github.com/ron-shinall)
+- [Eric Bauer](https://github.com/ericbauer)
