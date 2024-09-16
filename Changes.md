@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/Wafris/wafris-rb/compare/v2.0.0...v2.0.1) (2024-09-16)
+
+
+### Bug Fixes
+
+* Credit Eric Bauer for request property duplication suggestion ([24c6f79](https://github.com/Wafris/wafris-rb/commit/24c6f797e9f6c43844e71e7d59b0cb462cc25b69))
+* silenced deprecations should be handled by Rails App ([9964283](https://github.com/Wafris/wafris-rb/commit/996428352eec84b3e76d14b91c356deadab04c97))
+
 ## [2.0.0](https://github.com/Wafris/wafris-rb/compare/v1.1.11...v2.0.0) (2024-07-17)
 
 
