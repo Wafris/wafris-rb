@@ -80,3 +80,4 @@ Thanks to the following people who have contributed patches or helpful suggestio
 - [Ron Shinall](https://github.com/ron-shinall)
 - [Eric Bauer](https://github.com/ericbauer)
 - [Jeremy Smith](jeremysmithco)
+- [Sean Mitchell](https://github.com/seanwmitchell)
