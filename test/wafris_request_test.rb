@@ -8,7 +8,8 @@ class WafrisRequestTest < Minitest::Test
     @mock_request.expect(:params, {'foo' => 'bar'})
     @mock_request.expect(:host, 'example.com')
     @mock_request.expect(:request_method, 'GET')
-    @mock_request.expect(:body, StringIO.new('test body'))
+    @request_body = StringIO.new('test body')
+    @mock_request.expect(:body, @request_body)
     @mock_env = {
       'HTTP_USER_AGENT' => 'MockAgent',
       'HTTP_HOST' => 'example.com',
@@ -43,9 +44,19 @@ class WafrisRequestTest < Minitest::Test
     @mock_request.verify
   end
 
+  def test_request_body_position_after_initialization
+    Time.stub :now, Time.at(1234567890) do
+      Wafris::IpResolver.stub(:new, @ip_resolver) do
+        Wafris::WafrisRequest.new(@mock_request, @mock_env)
+
+        assert_equal 0, @request_body.pos
+      end
+    end
+  end
+
   def test_request_id_fallback
     @mock_env.delete('action_dispatch.request_id')
-    
+
     SecureRandom.stub :uuid, '987654321' do
       Wafris::IpResolver.stub(:new, @ip_resolver) do
         wafris_request = Wafris::WafrisRequest.new(@mock_request, @mock_env)

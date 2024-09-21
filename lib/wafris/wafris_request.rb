@@ -13,7 +13,7 @@ module Wafris
       @host = encode_to_utf8(request.host.to_s)
       @request_method = encode_to_utf8(request.request_method)
       @headers = extract_headers(env)
-      @body = request.body&.read
+      @body = encode_to_utf8(request.body&.string)
       @request_id = env.fetch('action_dispatch.request_id', SecureRandom.uuid.to_s)
       @request_timestamp = Time.now.utc.to_i
     end
