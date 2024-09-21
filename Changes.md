@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/Wafris/wafris-rb/compare/v2.0.1...v2.0.2) (2024-09-21)
+
+
+### Bug Fixes
+
+* Separate position test ([e45e773](https://github.com/Wafris/wafris-rb/commit/e45e77379b053e1f8fae9b27a4ea79358599cbad))
+
 ## [2.0.1](https://github.com/Wafris/wafris-rb/compare/v2.0.0...v2.0.1) (2024-09-16)
 
 
