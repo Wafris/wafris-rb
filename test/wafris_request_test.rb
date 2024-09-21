@@ -36,13 +36,22 @@ class WafrisRequestTest < Minitest::Test
         assert_equal 'GET', wafris_request.request_method
         assert_equal({'HTTP_USER_AGENT' => 'MockAgent', 'HTTP_HOST' => 'example.com'}, wafris_request.headers)
         assert_equal 'test body', wafris_request.body
-        assert_equal 0, @request_body.pos
         assert_equal '123456', wafris_request.request_id
         assert_equal 1234567890, wafris_request.request_timestamp
       end
     end
 
     @mock_request.verify
+  end
+
+  def test_request_body_position_after_initialization
+    Time.stub :now, Time.at(1234567890) do
+      Wafris::IpResolver.stub(:new, @ip_resolver) do
+        Wafris::WafrisRequest.new(@mock_request, @mock_env)
+
+        assert_equal 0, @request_body.pos
+      end
+    end
   end
 
   def test_request_id_fallback
