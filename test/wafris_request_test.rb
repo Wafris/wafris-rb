@@ -3,7 +3,7 @@ require 'test_helper'
 class WafrisRequestTest < Minitest::Test
   def setup
     @mock_request = Minitest::Mock.new
-    @mock_request.expect(:user_agent, 'MockAgent')
+    @mock_request.expect(:user_agent, nil)
     @mock_request.expect(:path, '/test')
     @mock_request.expect(:params, {'foo' => 'bar'})
     @mock_request.expect(:host, 'example.com')
@@ -29,7 +29,6 @@ class WafrisRequestTest < Minitest::Test
         wafris_request = Wafris::WafrisRequest.new(@mock_request, @mock_env)
 
         assert_equal '127.0.0.1', wafris_request.ip
-        assert_equal 'MockAgent', wafris_request.user_agent
         assert_equal '/test', wafris_request.path
         assert_equal 'foo=bar', wafris_request.parameters
         assert_equal 'example.com', wafris_request.host
@@ -73,6 +72,16 @@ class WafrisRequestTest < Minitest::Test
       wafris_request = Wafris::WafrisRequest.new(@mock_request, @mock_env)
       assert_equal 'UTF-8', wafris_request.headers['HTTP_X_TEST'].encoding.to_s
       assert_equal 'test', wafris_request.headers['HTTP_X_TEST']
+    end
+  end
+
+  def test_nil_value
+    @mock_request.expect(:user_agent, nil)
+
+    Wafris::IpResolver.stub(:new, @ip_resolver) do
+      wafris_request = Wafris::WafrisRequest.new(@mock_request, @mock_env)
+
+      assert_equal '', wafris_request.user_agent
     end
   end
 end

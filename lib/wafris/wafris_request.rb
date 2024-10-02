@@ -27,6 +27,8 @@ module Wafris
     end
 
     def encode_to_utf8(value)
+      return '' if value.nil?
+
       value&.dup&.force_encoding('UTF-8')
     end
   end
