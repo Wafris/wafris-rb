@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/Wafris/wafris-rb/compare/v2.0.2...v2.0.3) (2024-10-02)
+
+
+### Bug Fixes
+
+* request properties should be blank instead of nil ([05d2907](https://github.com/Wafris/wafris-rb/commit/05d29072ad0ad64ab3b647f4644f4282c5018e9a))
+
 ## [2.0.2](https://github.com/Wafris/wafris-rb/compare/v2.0.1...v2.0.2) (2024-09-21)
 
 
