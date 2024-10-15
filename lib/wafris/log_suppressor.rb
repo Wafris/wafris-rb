@@ -7,19 +7,19 @@ module Wafris
     end
 
     def self.suppress_logs?
-      suppressed_environments.include?(current_environment) || 
-      (ENV['WAFRIS_LOG_LEVEL'] && ENV['WAFRIS_LOG_LEVEL'] == 'silent')
+      suppressed_environments.include?(current_environment) ||
+        (ENV["WAFRIS_LOG_LEVEL"] && ENV["WAFRIS_LOG_LEVEL"] == "silent")
     end
 
     def self.suppressed_environments
-      ['test'] + (ENV['CI'] ? ['CI'] : [])
+      ["test"] + (ENV["CI"] ? ["CI"] : [])
     end
 
     def self.current_environment
       if defined?(Rails)
         Rails.env
       else
-        ENV['RACK_ENV'] || 'development'
+        ENV["RACK_ENV"] || "development"
       end
     end
   end

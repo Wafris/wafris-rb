@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 if defined?(Rails)
   describe "Middleware for Rails" do
