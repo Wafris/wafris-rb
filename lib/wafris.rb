@@ -183,25 +183,23 @@ module Wafris
     rescue HTTParty::Error => e
       LogSuppressor.puts_log("Upsync Error. Failed to send upsync requests: #{e.message}")
     end
-  
-    # This method is used to queue upsync requests. It takes in several parameters including 
-    # ip, user_agent, path, parameters, host, method, treatment, category, and rule. 
+
+    # This method is used to queue upsync requests. It takes in several parameters including:
     #
-    # The 'treatment' parameter represents the action taken on the request, which can be 
+    # The 'treatment' parameter represents the action taken on the request, which can be
     # 'Allowed', 'Blocked', or 'Passed'.
     #
-    # The 'category' parameter represents the category of the rule that was matched, such as 
+    # The 'category' parameter represents the category of the rule that was matched, such as
     # 'blocked_ip', 'allowed_cidr', etc.
     #
-    # The 'rule' parameter represents the specific rule that was matched within the category 
+    # The 'rule' parameter represents the specific rule that was matched within the category
     # ex: '192.23.5.4', 'SemRush', etc.
-    def queue_upsync_request(ip, user_agent, path, parameters, host, method, treatment, category, rule, request_id, request_timestamp)
-      if @configuration.upsync_status != 'Disabled' || @configuration.upsync_status != 'Uploading'
-        @configuration.upsync_status = 'Uploading'
+    def queue_upsync_request(request, treatment, category, rule)
+      if @configuration.upsync_status != "Disabled" || @configuration.upsync_status != "Uploading"
+        @configuration.upsync_status = "Uploading"
 
         # Add request to the queue
-        request = [ip, user_agent, path, parameters, host, method, treatment, category, rule, request_id, request_timestamp]
-        @configuration.upsync_queue << request
+        @configuration.upsync_queue << request.data.merge({ treatment: treatment, category: category, rule: rule })
 
         # If the queue is full, send the requests to the upsync server
         if @configuration.upsync_queue.length >= @configuration.upsync_queue_limit || (Time.now.to_i - @configuration.last_upsync_timestamp) >= @configuration.upsync_interval

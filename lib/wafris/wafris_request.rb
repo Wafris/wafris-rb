@@ -18,6 +18,19 @@ module Wafris
       @request_timestamp = Time.now.utc.to_i
     end
 
+    def data
+      {
+        ip: @ip,
+        user_agent: @user_agent,
+        path: @path,
+        parameter: @parameters,
+        host: @host,
+        method: @request_method,
+        request_id: @request_id,
+        timestamp: @request_timestamp
+      }
+    end
+
     private
 
     def extract_headers(env)
