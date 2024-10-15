@@ -79,6 +79,24 @@ describe Wafris do
     @rules_db.close
   end
 
+  describe "#evaluate" do
+    it "Happy path to allowed requests" do
+      Wafris.stubs(:current_db).with { |param| param == "custom_rules" }.returns("custom_rules_db")
+      Wafris.stubs(:current_db).with { |param| param == "data_subscriptions" }.returns("data_subscriptions_db")
+      Wafris.stubs(:exact_match).returns(true)
+      Wafris.stubs(:queue_upsync_request).returns("Allowed")
+      SQLite3::Database.stubs(:new).returns("opened")
+
+      request = Minitest::Mock.new
+      request.expect(
+        :data,
+        { ip: @blocked_ipv4, user_agent: "Mozilla/5.0", path: "/blocked", parameter: "blocked",
+          host: "blocked.com", method: "PUT", request_id: "1234", timestamp: 1234567890 }
+      )
+      request.expect(:ip, @blocked_ipv4)
+      assert_equal "Allowed", Wafris.evaluate(request)
+    end
+  end
 
   describe "CIDR lookups should work" do
     

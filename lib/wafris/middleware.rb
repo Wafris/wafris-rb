@@ -9,19 +9,9 @@ module Wafris
 
     def call(env)
       request = Rack::Request.new(env)
-      wafris_request = WafrisRequest.new(request, env)
 
       treatment = Wafris.evaluate(
-        wafris_request.ip,
-        wafris_request.user_agent,
-        wafris_request.path,
-        wafris_request.parameters,
-        wafris_request.host,
-        wafris_request.request_method,
-        wafris_request.headers,
-        wafris_request.body,
-        wafris_request.request_id,
-        wafris_request.request_timestamp
+        WafrisRequest.new(request, env)
       )
 
       # These values match what the client tests expect (200, 404, 403, 500)

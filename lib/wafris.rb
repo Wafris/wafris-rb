@@ -450,93 +450,92 @@ module Wafris
   
     # This is the main loop that evaluates the request
     # as well as sorts out when downsync and upsync should be called
-    def evaluate(ip, user_agent, path, parameters, host, method, _headers, _body, request_id, request_timestamp)
+    def evaluate(request)
       @configuration ||= Wafris::Configuration.new
 
-      if @configuration.api_key.nil?
-        return "Passed"
-      else
-        rules_db_filename = current_db('custom_rules')
-        data_subscriptions_db_filename = current_db('data_subscriptions')
+      return "Passed" if @configuration.api_key.nil?
 
-        if rules_db_filename.to_s.strip != '' && data_subscriptions_db_filename.strip.to_s.strip != ''
+      rules_db_filename = current_db("custom_rules")
+      data_subscriptions_db_filename = current_db("data_subscriptions")
 
-          rules_db = SQLite3::Database.new "#{@configuration.db_file_path}/#{rules_db_filename}"
-          data_subscriptions_db =
-            SQLite3::Database.new "#{@configuration.db_file_path}/#{data_subscriptions_db_filename}"
+      # Checks to see if the filenames are present before loading the db
+      if rules_db_filename.to_s.strip != "" && data_subscriptions_db_filename.strip.to_s.strip != ""
 
-          # Allowed IPs
-          if exact_match(ip, 'allowed_ips', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Allowed', 'ai',
-                                        ip, request_id, request_timestamp)
-          end
+        rules_db = SQLite3::Database.new "#{@configuration.db_file_path}/#{rules_db_filename}"
+        data_subscriptions_db =
+          SQLite3::Database.new "#{@configuration.db_file_path}/#{data_subscriptions_db_filename}"
 
-          # Allowed CIDR Ranges
-          if ip_in_cidr_range(ip, 'allowed_cidr_ranges', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Allowed', 'ac', ip, request_id, request_timestamp)
-          end
+        ip = request.ip
 
-          # Blocked IPs
-          if exact_match(ip, 'blocked_ips', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bi', ip, request_id, request_timestamp)
-          end
-
-          # Blocked CIDR Ranges
-          if ip_in_cidr_range(ip, 'blocked_cidr_ranges', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bc', ip, request_id, request_timestamp)
-          end
-
-          # Blocked Country Codes
-          country_code = get_country_code(ip, data_subscriptions_db)      
-          if exact_match(country_code, 'blocked_country_codes', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bs', "G_#{country_code}", request_id, request_timestamp)
-          end 
-
-          # Blocked Reputation IP Ranges
-          if ip_in_cidr_range(ip, 'reputation_ip_ranges', data_subscriptions_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bs', "R", request_id, request_timestamp)
-          end
-
-          # Blocked User Agents
-          user_agent_match = substring_match(user_agent, 'blocked_user_agents', rules_db)
-          if user_agent_match
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bu', user_agent_match, request_id, request_timestamp)
-          end
-
-          # Blocked Paths
-          path_match = substring_match(path, 'blocked_paths', rules_db)
-          if path_match
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bp', path_match, request_id, request_timestamp)
-          end
-  
-          # Blocked Parameters
-          parameters_match = substring_match(parameters, 'blocked_parameters', rules_db)
-          if parameters_match
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'ba', parameters_match, request_id, request_timestamp)
-          end
-  
-          # Blocked Hosts
-          if exact_match(host, 'blocked_hosts', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bh', host, request_id, request_timestamp)
-          end
-  
-          # Blocked Methods
-          if exact_match(method, 'blocked_methods', rules_db)
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'bm', method, request_id, request_timestamp)
-          end
-  
-          # Rate Limiting
-          rule_id = check_rate_limit(ip, path, method, rules_db)
-          if rule_id
-            return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Blocked', 'brl', rule_id, request_id, request_timestamp)
-          end
-  
+        # Allowed IPs
+        if exact_match(ip, "allowed_ips", rules_db)
+          return queue_upsync_request(request, "Allowed", "ai")
         end
-  
-        # Passed if no allow or block rules matched
-        return queue_upsync_request(ip, user_agent, path, parameters, host, method, 'Passed', 'passed', '-', request_id, request_timestamp)
 
-      end # end api_key.nil?
+        # Allowed CIDR Ranges
+        if ip_in_cidr_range(ip, "allowed_cidr_ranges", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Allowed", "ac", ip, request_id, request_timestamp)
+        end
+
+        # Blocked IPs
+        if exact_match(ip, "blocked_ips", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bi", ip, request_id, request_timestamp)
+        end
+
+        # Blocked CIDR Ranges
+        if ip_in_cidr_range(ip, "blocked_cidr_ranges", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bc", ip, request_id, request_timestamp)
+        end
+
+        # Blocked Country Codes
+        country_code = get_country_code(ip, data_subscriptions_db)
+        if exact_match(country_code, "blocked_country_codes", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bs", "G_#{country_code}", request_id, request_timestamp)
+        end
+
+        # Blocked Reputation IP Ranges
+        if ip_in_cidr_range(ip, "reputation_ip_ranges", data_subscriptions_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bs", "R", request_id, request_timestamp)
+        end
+
+        # Blocked User Agents
+        user_agent_match = substring_match(user_agent, "blocked_user_agents", rules_db)
+        if user_agent_match
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bu", user_agent_match, request_id, request_timestamp)
+        end
+
+        # Blocked Paths
+        path_match = substring_match(path, "blocked_paths", rules_db)
+        if path_match
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bp", path_match, request_id, request_timestamp)
+        end
+
+        # Blocked Parameters
+        parameters_match = substring_match(parameters, "blocked_parameters", rules_db)
+        if parameters_match
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "ba", parameters_match, request_id, request_timestamp)
+        end
+
+        # Blocked Hosts
+        if exact_match(host, "blocked_hosts", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bh", host, request_id, request_timestamp)
+        end
+
+        # Blocked Methods
+        if exact_match(method, "blocked_methods", rules_db)
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "bm", method, request_id, request_timestamp)
+        end
+
+        # Rate Limiting
+        rule_id = check_rate_limit(ip, path, method, rules_db)
+        if rule_id
+          return queue_upsync_request(ip, user_agent, path, parameters, host, method, "Blocked", "brl", rule_id, request_id, request_timestamp)
+        end
+
+      end
+
+      # Passed if no allow or block rules matched
+      queue_upsync_request(request, "Passed", "passed", "-")
     end # end evaluate
   
     def debug(api_key)
