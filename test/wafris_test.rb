@@ -79,20 +79,20 @@ describe Wafris do
   end
 
   describe "#evaluate" do
-    it "Happy path to allowed requests" do
-      Wafris.stubs(:current_db).with { |param| param == "custom_rules" }.returns("custom_rules_db")
-      Wafris.stubs(:current_db).with { |param| param == "data_subscriptions" }.returns("data_subscriptions_db")
+    it "allows an ip" do
+      Wafris.stubs(:current_db).returns("db")
       Wafris.stubs(:exact_match).returns(true)
       Wafris.stubs(:queue_upsync_request).returns("Allowed")
-      SQLite3::Database.stubs(:new).returns("opened")
+      request = OpenStruct.new(ip: "127.0.0.1")
+      assert_equal "Allowed", Wafris.evaluate(request)
+    end
 
-      request = Minitest::Mock.new
-      request.expect(
-        :data,
-        { ip: @blocked_ipv4, user_agent: "Mozilla/5.0", path: "/blocked", parameter: "blocked",
-          host: "blocked.com", method: "PUT", request_id: "1234", timestamp: 1234567890 }
-      )
-      request.expect(:ip, @blocked_ipv4)
+    it "allows based on cidr range" do
+      Wafris.stubs(:current_db).returns("db")
+      Wafris.stubs(:exact_match).returns(false)
+      Wafris.stubs(:ip_in_cidr_range).returns("Allowed")
+      Wafris.stubs(:queue_upsync_request).returns("Allowed")
+      request = OpenStruct.new(ip: "127.0.0.1")
       assert_equal "Allowed", Wafris.evaluate(request)
     end
   end

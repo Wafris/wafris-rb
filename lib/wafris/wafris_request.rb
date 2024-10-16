@@ -2,7 +2,7 @@
 
 module Wafris
   class WafrisRequest
-    attr_reader :ip, :user_agent, :path, :parameters, :host, :request_method,
+    attr_reader :ip, :user_agent, :path, :parameters, :host, :method,
                 :headers, :body, :request_id, :request_timestamp
 
     def initialize(request, env)
@@ -11,7 +11,7 @@ module Wafris
       @path = encode_to_utf8(request.path)
       @parameters = encode_to_utf8(Rack::Utils.build_query(request.params))
       @host = encode_to_utf8(request.host.to_s)
-      @request_method = encode_to_utf8(request.request_method)
+      @method = encode_to_utf8(request.request_method)
       @headers = extract_headers(env)
       @body = encode_to_utf8(request.body&.string)
       @request_id = env.fetch("action_dispatch.request_id", SecureRandom.uuid.to_s)
@@ -25,7 +25,7 @@ module Wafris
         path: @path,
         parameter: @parameters,
         host: @host,
-        method: @request_method,
+        method: @method,
         request_id: @request_id,
         timestamp: @request_timestamp
       }
