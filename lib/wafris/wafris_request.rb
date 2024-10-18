@@ -20,7 +20,7 @@ module Wafris
       request.body&.rewind
     end
 
-    def data
+    def data(treatment:, category:, rule:)
       {
         ip: @ip,
         user_agent: @user_agent,
@@ -29,7 +29,10 @@ module Wafris
         host: @host,
         method: @method,
         request_id: @request_id,
-        timestamp: @request_timestamp
+        timestamp: @request_timestamp,
+        treatment: treatment,
+        category: category,
+        rule: rule
       }
     end
 

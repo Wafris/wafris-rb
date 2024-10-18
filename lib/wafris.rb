@@ -199,7 +199,7 @@ module Wafris
         @configuration.upsync_status = "Uploading"
 
         # Add request to the queue
-        @configuration.upsync_queue << request.data.merge({ treatment: treatment, category: category, rule: rule })
+        @configuration.upsync_queue << request.data(treatment: treatment, category: category, rule: rule)
 
         # If the queue is full, send the requests to the upsync server
         if @configuration.upsync_queue.length >= @configuration.upsync_queue_limit || (Time.now.to_i - @configuration.last_upsync_timestamp) >= @configuration.upsync_interval
