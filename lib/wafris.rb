@@ -172,7 +172,7 @@ module Wafris
         url_and_api_key,
         body: body,
         headers: headers,
-        timeout: 300
+        timeout: 10
       )
 
       if response.code == 200
