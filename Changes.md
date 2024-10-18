@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.4](https://github.com/Wafris/wafris-rb/compare/v2.0.3...v2.0.4) (2024-10-18)
+
+
+### Bug Fixes
+
+* limit upsync to 10 seconds ([5aa9224](https://github.com/Wafris/wafris-rb/commit/5aa92246fceaa7d8acb1ce9a2a6c5df78cbf88ca))
+* use a hash for request data ([b537ea2](https://github.com/Wafris/wafris-rb/commit/b537ea2b5935b1054b66aebe08efbbb6935378df))
+* use read/rewind instead of string ([9c8f8bb](https://github.com/Wafris/wafris-rb/commit/9c8f8bb675f61693a8dc11d76d03367c64e93ddd))
+
 ## [2.0.3](https://github.com/Wafris/wafris-rb/compare/v2.0.2...v2.0.3) (2024-10-02)
 
 
