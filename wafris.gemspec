@@ -23,10 +23,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rack", ">= 2.0"
 
   s.add_dependency "awesome_print"
-  s.add_dependency "httparty"
+  s.add_dependency "httparty", ">= 0.21.0"
   s.add_dependency "ipaddr"
   s.add_dependency "sqlite3"
 
+  s.add_development_dependency "debug", ">= 1.0.0"
   s.add_development_dependency "minitest", "~> 5.1"
   s.add_development_dependency "mocha", "~> 2.4.5"
   s.add_development_dependency "pry", "~> 0.14", ">= 0.14.1"
