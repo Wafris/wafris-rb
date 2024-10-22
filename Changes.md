@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/Wafris/wafris-rb/compare/v2.0.4...v2.0.5) (2024-10-22)
+
+
+### Bug Fixes
+
+* specify httparty version ([1564952](https://github.com/Wafris/wafris-rb/commit/1564952e3aaae4fe7d1e4a3d8774578717fd3819))
+
 ## [2.0.4](https://github.com/Wafris/wafris-rb/compare/v2.0.3...v2.0.4) (2024-10-18)
 
 
