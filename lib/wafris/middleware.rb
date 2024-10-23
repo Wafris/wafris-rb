@@ -9,11 +9,12 @@ module Wafris
     end
 
     def call(env)
-      request = Rack::Request.new(env)
-
-      treatment = Wafris.evaluate(
-        WafrisRequest.new(request, env)
+      wafris_request = WafrisRequest.new(
+        Rack::Request.new(env),
+        env
       )
+
+      treatment = Wafris.evaluate(wafris_request)
 
       @notifier&.instrument("#{treatment}.wafris", request: wafris_request, treatment: treatment)
 
