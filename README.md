@@ -81,3 +81,4 @@ Thanks to the following people who have contributed patches or helpful suggestio
 - [Eric Bauer](https://github.com/ericbauer)
 - [Jeremy Smith](jeremysmithco)
 - [Sean Mitchell](https://github.com/seanwmitchell)
+- [Ben Curtis](https://github.com/stympy)
