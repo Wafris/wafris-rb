@@ -4,6 +4,7 @@ module Wafris
   class Middleware
     def initialize(app)
       @app = app
+      @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       ProxyFilter.set_filter
     end
 
@@ -13,6 +14,8 @@ module Wafris
       treatment = Wafris.evaluate(
         WafrisRequest.new(request, env)
       )
+
+      @notifier&.instrument("#{treatment}.wafris", request: wafris_request, treatment: treatment)
 
       # These values match what the client tests expect (200, 404, 403, 500)
       if treatment == "Allowed" || treatment == "Passed"
