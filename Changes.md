@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.6](https://github.com/Wafris/wafris-rb/compare/v2.0.5...v2.0.6) (2024-10-23)
+
+
+### Bug Fixes
+
+* extract out wafris_request object to be used with the notifier ([fad57ae](https://github.com/Wafris/wafris-rb/commit/fad57ae3519b739524a321b3a3187fc68ebc25a5))
+
 ## [2.0.5](https://github.com/Wafris/wafris-rb/compare/v2.0.4...v2.0.5) (2024-10-22)
 
 
