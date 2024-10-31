@@ -19,6 +19,19 @@ module Wafris
   class << self
     attr_accessor :configuration
 
+    ALLOWED_IP = "ai"
+    ALLOWED_CIDR = "ac"
+    BLOCKED_IP = "bi"
+    BLOCKED_CIDR = "bc"
+    BLOCKED_REPUTATION = "brep"
+    BLOCKED_COUNTRY = "bctry"
+    BLOCKED_USER_AGENT = "bu"
+    BLOCKED_PATH = "bp"
+    BLOCKED_PARAM = "bparam"
+    BLOCKED_HOST = "bh"
+    BLOCKED_METHOD = "bm"
+    BLOCKED_RATE_LIMIT = "brl"
+
     def configure
       self.configuration ||= Wafris::Configuration.new
       yield(configuration)
@@ -434,34 +447,35 @@ module Wafris
           SQLite3::Database.new "#{@configuration.db_file_path}/#{data_subscriptions_db_filename}"
 
         ip = request.ip
-        return queue_upsync_request(request, "Allowed", "ai", ip) if exact_match(ip, "allowed_ips", rules_db)
-        return queue_upsync_request(request, "Allowed", "ac", ip) if ip_in_cidr_range(ip, "allowed_cidr_ranges", rules_db)
-        return queue_upsync_request(request, "Blocked", "bi", ip) if exact_match(ip, "blocked_ips", rules_db)
-        return queue_upsync_request(request, "Blocked", "bc", ip) if ip_in_cidr_range(ip, "blocked_cidr_ranges", rules_db)
+
+        return queue_upsync_request(request, "Allowed", ALLOWED_IP, ip) if exact_match(ip, "allowed_ips", rules_db)
+        return queue_upsync_request(request, "Allowed", ALLOWED_CIDR, ip) if ip_in_cidr_range(ip, "allowed_cidr_ranges", rules_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_IP, ip) if exact_match(ip, "blocked_ips", rules_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_CIDR, ip) if ip_in_cidr_range(ip, "blocked_cidr_ranges", rules_db)
 
         country_code = get_country_code(ip, data_subscriptions_db)
-        return queue_upsync_request(request, "Blocked", "bs", "G_#{country_code}") if exact_match(country_code, "blocked_country_codes", rules_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_COUNTRY, "G_#{country_code}") if exact_match(country_code, "blocked_country_codes", rules_db)
 
         # Blocked Reputation IP Ranges
-        return queue_upsync_request(request, "Blocked", "bs", "R") if ip_in_cidr_range(ip, "reputation_ip_ranges", data_subscriptions_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_REPUTATION, "R") if ip_in_cidr_range(ip, "reputation_ip_ranges", data_subscriptions_db)
 
         user_agent_match = substring_match(request.user_agent, "blocked_user_agents", rules_db)
-        return queue_upsync_request(request, "Blocked", "bu", user_agent_match) if user_agent_match
+        return queue_upsync_request(request, "Blocked", BLOCKED_USER_AGENT, user_agent_match) if user_agent_match
 
         path_match = substring_match(request.path, "blocked_paths", rules_db)
-        return queue_upsync_request(request, "Blocked", "bp", path_match) if path_match
+        return queue_upsync_request(request, "Blocked", BLOCKED_PATH, path_match) if path_match
 
         parameters_match = substring_match(request.parameters, "blocked_parameters", rules_db)
-        return queue_upsync_request(request, "Blocked", "ba", parameters_match) if parameters_match
+        return queue_upsync_request(request, "Blocked", BLOCKED_PARAM, parameters_match) if parameters_match
 
-        return queue_upsync_request(request, "Blocked", "bh", request.host) if exact_match(request.host, "blocked_hosts", rules_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_HOST, request.host) if exact_match(request.host, "blocked_hosts", rules_db)
 
-        return queue_upsync_request(request, "Blocked", "bm", request.method) if exact_match(request.method, "blocked_methods", rules_db)
+        return queue_upsync_request(request, "Blocked", BLOCKED_METHOD, request.method) if exact_match(request.method, "blocked_methods", rules_db)
 
         # Rate Limiting
         rule_id = check_rate_limit(ip, request.path, request.method, rules_db)
         if rule_id
-          return queue_upsync_request(request, "Blocked", "brl", rule_id)
+          return queue_upsync_request(request, "Blocked", BLOCKED_RATE_LIMIT, rule_id)
         end
       end
 
