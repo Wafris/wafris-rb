@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.7](https://github.com/Wafris/wafris-rb/compare/v2.0.6...v2.0.7) (2024-10-31)
+
+
+### Bug Fixes
+
+* add a new abbreviation since they are being misrepresented on hub ([9246882](https://github.com/Wafris/wafris-rb/commit/9246882e6d37c973e89b4217acd7c83d1d1f5188))
+
 ## [2.0.6](https://github.com/Wafris/wafris-rb/compare/v2.0.5...v2.0.6) (2024-10-23)
 
 
