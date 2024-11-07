@@ -37,6 +37,15 @@ module Wafris
         /\A172\.(1[6-9]|2[0-9]|3[01])#{valid_ipv4_octet}{2}\z/,   # private IPv4 range 172.16.0.0 .. 172.31.255.255
         /\A192\.168#{valid_ipv4_octet}{2}\z/,                     # private IPv4 range 192.168.x.x
         /\Alocalhost\z|\Aunix(\z|:)/i,                            # localhost hostname, and unix domain sockets
+        # Cloudflare IPs: https://www.cloudflare.com/en-au/ips/
+        /\A103\.21\.24[4-7]#{valid_ipv4_octet}\z/,                # 103.21.244.0/22
+        /\A103\.22\.20[0-3]#{valid_ipv4_octet}\z/,                # 103.22.200.0/22
+        /\A103\.31\.[4-7]#{valid_ipv4_octet}\z/,                  # 103.31.4.0/22
+        /\A104\.(1[6-9]|2[0-3])#{valid_ipv4_octet}{2}\z/,         # 104.16.0.0/13
+        /\A104\.2[4-7]#{valid_ipv4_octet}{2}\z/,                  # 104.24.0.0/14
+        /\A108\.162\.192#{valid_ipv4_octet}\z/,                   # 108.162.192.0/18
+        /\A162\.15[8-9]#{valid_ipv4_octet}{2}\z/,                # 162.158.0.0/15
+        /\A172\.(6[4-9]|7[0-1])#{valid_ipv4_octet}{2}\z/,         # 172.64.0.0/13
         *user_defined_proxies
       )
 
