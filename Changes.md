@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Wafris/wafris-rb/compare/v2.0.7...v2.1.0) (2024-11-07)
+
+
+### Features
+
+* Add cloudflare ips to the trusted proxy ranges ([5c5de93](https://github.com/Wafris/wafris-rb/commit/5c5de93589515bef48d7a0bd270116b4fd82a8c7))
+
 ## [2.0.7](https://github.com/Wafris/wafris-rb/compare/v2.0.6...v2.0.7) (2024-10-31)
 
 
