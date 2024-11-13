@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/Wafris/wafris-rb/compare/v2.1.0...v2.1.1) (2024-11-13)
+
+
+### Bug Fixes
+
+* Do not rewind if the request body position did not change ([2d885c7](https://github.com/Wafris/wafris-rb/commit/2d885c7617e44f9f4e221633f49b5324089886c2))
+* forgot to run tests ([0eff2c4](https://github.com/Wafris/wafris-rb/commit/0eff2c40755bd698ea2584d5ea9c188fdd3578d0))
+
 ## [2.1.0](https://github.com/Wafris/wafris-rb/compare/v2.0.7...v2.1.0) (2024-11-07)
 
 
