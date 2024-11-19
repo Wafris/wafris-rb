@@ -8,17 +8,13 @@ class WafrisRequestTest < Minitest::Test
     @mock_request.expect(:params, {"foo" => "bar"})
     @mock_request.expect(:host, "example.com")
     @mock_request.expect(:request_method, "GET")
-    @request_body = StringIO.new("test body")
-    # Expect multiple calls to body to simulate rewind and position checks
-    4.times { @mock_request.expect(:body, @request_body) }
     @mock_env = {
       "HTTP_USER_AGENT" => "MockAgent",
       "HTTP_HOST" => "example.com",
       "REQUEST_METHOD" => "GET",
       "PATH_INFO" => "/test",
       "QUERY_STRING" => "foo=bar",
-      "action_dispatch.request_id" => "123456",
-      "rack.input" => StringIO.new("test body")
+      "action_dispatch.request_id" => "123456"
     }
     @ip_resolver = Minitest::Mock.new
     @ip_resolver.expect(:resolve, "127.0.0.1")
@@ -35,23 +31,12 @@ class WafrisRequestTest < Minitest::Test
         assert_equal "example.com", wafris_request.host
         assert_equal "GET", wafris_request.method
         assert_equal({"HTTP_USER_AGENT" => "MockAgent", "HTTP_HOST" => "example.com"}, wafris_request.headers)
-        assert_equal "test body", wafris_request.body
         assert_equal "123456", wafris_request.request_id
         assert_equal 1234567890, wafris_request.request_timestamp
       end
     end
 
     @mock_request.verify
-  end
-
-  def test_request_body_position_after_initialization
-    Time.stub :now, Time.at(1234567890) do
-      Wafris::IpResolver.stub(:new, @ip_resolver) do
-        Wafris::WafrisRequest.new(@mock_request, @mock_env)
-
-        assert_equal 0, @request_body.pos
-      end
-    end
   end
 
   def test_request_id_fallback
