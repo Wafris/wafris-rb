@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/Wafris/wafris-rb/compare/v2.1.1...v2.1.2) (2024-11-19)
+
+
+### Bug Fixes
+
+* Remove code that references the request body ([3f25272](https://github.com/Wafris/wafris-rb/commit/3f25272c7bac63f580e477e81fc79b7436fdacb3))
+
 ## [2.1.1](https://github.com/Wafris/wafris-rb/compare/v2.1.0...v2.1.1) (2024-11-13)
 
 
