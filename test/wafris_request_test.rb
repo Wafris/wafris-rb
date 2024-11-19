@@ -10,7 +10,7 @@ class WafrisRequestTest < Minitest::Test
     @mock_request.expect(:request_method, "GET")
     @request_body = StringIO.new("test body")
     # Expect multiple calls to body to simulate rewind and position checks
-    4.times { @mock_request.expect(:body, @request_body) }
+    2.times { @mock_request.expect(:body, @request_body) }
     @mock_env = {
       "HTTP_USER_AGENT" => "MockAgent",
       "HTTP_HOST" => "example.com",
