@@ -3,7 +3,7 @@
 module Wafris
   class WafrisRequest
     attr_reader :ip, :user_agent, :path, :parameters, :host, :method,
-                :headers, :body, :request_id, :request_timestamp
+                :headers, :request_id, :request_timestamp
 
     def initialize(request, env)
       @ip = encode_to_utf8(IpResolver.new(request).resolve)
@@ -15,10 +15,6 @@ module Wafris
       @headers = extract_headers(env)
       @request_id = env.fetch("action_dispatch.request_id", SecureRandom.uuid.to_s)
       @request_timestamp = Time.now.utc.to_i
-
-      pos = request.body&.pos
-      @body = encode_to_utf8(request.body&.read)
-      request.body&.rewind if request.body&.pos != pos
     end
 
     def data(treatment:, category:, rule:)
