@@ -16,9 +16,8 @@ module Wafris
       @request_id = env.fetch("action_dispatch.request_id", SecureRandom.uuid.to_s)
       @request_timestamp = Time.now.utc.to_i
 
-      pos = request.body&.pos
       @body = encode_to_utf8(request.body&.read)
-      request.body&.rewind if request.body&.pos != pos
+      request.body&.rewind unless @body&.empty?
     end
 
     def data(treatment:, category:, rule:)
