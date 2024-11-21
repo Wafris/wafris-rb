@@ -187,20 +187,22 @@ module Wafris
 
       url_and_api_key = @configuration.upsync_url + "/" + @configuration.api_key
 
+      LogSuppressor.puts_log("Beginning upsync request thread...")
       response = HTTParty.post(
         url_and_api_key,
         body: body,
         headers: headers,
-        timeout: 10
+        timeout: 5
       )
 
       if response.code == 200
         @configuration.upsync_status = "Complete"
+        LogSuppressor.puts_log("Upsync request thread complete.")
       else
-        LogSuppressor.puts_log("Upsync Error. HTTP Response: #{response.code}")
+        LogSuppressor.puts_log("Upsync Thread Error. HTTP Response: #{response.code}")
       end
     rescue HTTParty::Error => e
-      LogSuppressor.puts_log("Upsync Error. Failed to send upsync requests: #{e.message}")
+      LogSuppressor.puts_log("Upsync Thread Error. Failed to send upsync requests: #{e.message}")
     end
 
     # This method is used to queue upsync requests. It takes in several parameters including:
@@ -226,7 +228,7 @@ module Wafris
           @configuration.upsync_queue = []
           @configuration.last_upsync_timestamp = Time.now.to_i
 
-          send_upsync_requests(requests_array)
+          Thread.new { send_upsync_requests(requests_array) }
         end
 
         @configuration.upsync_status = "Enabled"
@@ -283,7 +285,8 @@ module Wafris
         response = HTTParty.get(
           uri,
           follow_redirects: true,   # Enable following redirects
-          max_redirects: 2          # Maximum number of redirects to follow
+          max_redirects: 2,         # Maximum number of redirects to follow
+          timeout: 20
         )
 
         # TODO: What to do if timeout
