@@ -187,7 +187,8 @@ module Wafris
 
       url_and_api_key = @configuration.upsync_url + "/" + @configuration.api_key
 
-      LogSuppressor.puts_log("Beginning upsync request thread...")
+      LogSuppressor.puts_log("[Wafris][Upsync] Beginning request thread...")
+      current_time = Time.now
       response = HTTParty.post(
         url_and_api_key,
         body: body,
@@ -197,12 +198,14 @@ module Wafris
 
       if response.code == 200
         @configuration.upsync_status = "Complete"
-        LogSuppressor.puts_log("Upsync request thread complete.")
       else
-        LogSuppressor.puts_log("Upsync Thread Error. HTTP Response: #{response.code}")
+        LogSuppressor.puts_log("[Wafris][Upsync] Error. HTTP Response: #{response.code}")
       end
     rescue HTTParty::Error => e
-      LogSuppressor.puts_log("Upsync Thread Error. Failed to send upsync requests: #{e.message}")
+      LogSuppressor.puts_log("[Wafris][Upsync] Thread Error. Failed to send upsync requests: #{e.message}")
+    ensure
+      elapsed_time = Time.now - current_time
+      LogSuppressor.puts_log("[Wafris][Upsync] request thread complete in #{elapsed_time.round(2)} seconds.")
     end
 
     # This method is used to queue upsync requests. It takes in several parameters including:
@@ -257,7 +260,7 @@ module Wafris
       begin
         lockfile = File.open(lockfile_path, File::RDWR | File::CREAT | File::EXCL)
       rescue Errno::EEXIST
-        LogSuppressor.puts_log("[Wafris][Downsync] Lockfile already exists, skipping downsync.")
+        LogSuppressor.puts_log("[Wafris][Downsync][downsync_db] Lockfile already exists, skipping downsync.")
         return
       rescue Exception => e
         LogSuppressor.puts_log("[Wafris][Downsync] Error creating lockfile: #{e.message}")
@@ -282,11 +285,14 @@ module Wafris
         # puts "Downloading from #{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?current_version=#{current_filename}&process_id=#{Process.pid}"
         uri = "#{@configuration.downsync_url}/#{db_rule_category}/#{@configuration.api_key}?#{data.to_query}"
 
+        LogSuppressor.puts_log("[Wafris][Downsync] Beginning request thread for #{db_rule_category}...")
+        current_time = Time.now
+
         response = HTTParty.get(
           uri,
           follow_redirects: true,   # Enable following redirects
           max_redirects: 2,         # Maximum number of redirects to follow
-          timeout: 20
+          timeout: 30
         )
 
         # TODO: What to do if timeout
@@ -300,7 +306,6 @@ module Wafris
 
         elsif response.code == 304
           @configuration.upsync_status = "Enabled"
-          LogSuppressor.puts_log("[Wafris][Downsync] No new rules to download")
 
           filename = current_filename
 
@@ -356,9 +361,20 @@ module Wafris
         # Ensure the lockfile is removed after operations
         lockfile.close
         File.delete(lockfile_path)
+
+        elapsed_time = Time.now - current_time
+        LogSuppressor.puts_log("[Wafris][Downsync] request thread complete in #{elapsed_time.round(2)} seconds for #{db_rule_category}.")
       end
 
       filename
+    end
+
+    def sync_interval(db_rule_category)
+      if db_rule_category == "custom_rules"
+        @configuration.downsync_custom_rules_interval
+      else
+        @configuration.downsync_data_subscriptions_interval
+      end
     end
 
     # Returns the current database file,
@@ -366,12 +382,6 @@ module Wafris
     # if the file doesn't exist, it will download the latest db
     # if the lockfile exists, it will return the current db
     def current_db(db_rule_category)
-      interval = if db_rule_category == "custom_rules"
-                   @configuration.downsync_custom_rules_interval
-                 else
-                   @configuration.downsync_data_subscriptions_interval
-                 end
-
       # Checks for existing current modfile, which contains the current db filename
       if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.modfile")
 
@@ -385,13 +395,13 @@ module Wafris
         LogSuppressor.puts_log("[Wafris][Downsync] DB in Modfile: #{returned_db}")
 
         # Check if the db file is older than the interval
-        if (Time.now.to_i - last_db_synctime) > interval
+        if (Time.now.to_i - last_db_synctime) > sync_interval(db_rule_category)
 
           LogSuppressor.puts_log("[Wafris][Downsync] DB is older than the interval")
 
           # Make sure that another process isn't already downloading the rules
           if !File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
-            returned_db = downsync_db(db_rule_category, returned_db)
+            Thread.new { downsync_db(db_rule_category, returned_db) }
           end
 
           returned_db
@@ -416,24 +426,18 @@ module Wafris
       # No modfile exists, so download the latest db
       else
 
-        LogSuppressor.puts_log("[Wafris][Downsync] No modfile exists, downloading latest db")
+        LogSuppressor.puts_log("[Wafris][Downsync] No modfile exists, downloading latest #{db_rule_category} db")
 
         # Make sure that another process isn't already downloading the rules
         if File.exist?("#{@configuration.db_file_path}/#{db_rule_category}.lockfile")
-          LogSuppressor.puts_log("[Wafris][Downsync] Lockfile exists, skipping downsync")
+          LogSuppressor.puts_log("[Wafris][Downsync][current_db] Lockfile exists, skipping downsync")
           # Lockfile exists, but no modfile with a db filename
           nil
         else
-
-          LogSuppressor.puts_log("[Wafris][Downsync] No modfile exists, downloading latest db")
           # No modfile exists, so download the latest db
-          returned_db = downsync_db(db_rule_category, nil)
+          Thread.new { downsync_db(db_rule_category, nil) }
 
-          if returned_db.nil?
-            nil
-          else
-            returned_db
-          end
+          nil
         end
       end
     end
@@ -447,11 +451,12 @@ module Wafris
 
       return "Passed" if @configuration.api_key.nil?
 
+      # Now current_db can return the actual db, nil, or a future object
       rules_db_filename = current_db("custom_rules")
       data_subscriptions_db_filename = current_db("data_subscriptions")
 
       # Checks to see if the filenames are present before loading the db
-      if rules_db_filename.to_s.strip != "" && data_subscriptions_db_filename.strip.to_s.strip != ""
+      if rules_db_filename.to_s.strip != "" && data_subscriptions_db_filename.to_s.strip != ""
 
         rules_db = SQLite3::Database.new "#{@configuration.db_file_path}/#{rules_db_filename}"
         data_subscriptions_db =
