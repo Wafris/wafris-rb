@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/Wafris/wafris-rb/compare/v2.1.2...v2.2.0) (2024-11-26)
+
+
+### Features
+
+* configuration can be set with defaults, ENVs, or a block ([acc2a1d](https://github.com/Wafris/wafris-rb/commit/acc2a1dae5e0d68ef3a34ac6ae7585d86aa0222b))
+
 ## [2.1.2](https://github.com/Wafris/wafris-rb/compare/v2.1.1...v2.1.2) (2024-11-19)
 
 
