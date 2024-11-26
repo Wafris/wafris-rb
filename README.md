@@ -42,16 +42,31 @@ gem 'wafris'
 ```
 
 ### 3. Set your API Key
+When you sign up on [Wafris Hub](https://hub.wafris.org), you'll receive your API key along with Rails instructions.
 
-In your production environment, you'll need to set the `WAFRIS_API_KEY` environment variable to your API key. When you sign up on [Wafris Hub](https://hub.wafris.org), you'll receive your API key along with per-platform instructions.
+You have the option of using an Environment Variable or setting it in an initializer.
+
+*ENV Variable:*
+
+In your development/production environment, you'll need to set the `WAFRIS_API_KEY` environment variable to your API key.
+
+*Initializer:*
+
+You can also set an API key with an initializer files. Using something like `config/initializers/wafris.rb`:
+```ruby
+Wafris.configure do |config|
+  config.api_key = 'provided key'
+end
+```
+This is the suggested method if you want to store your API key in Rails credentials.
 
 ## v1 Migration
 
-Version 1 of the Wafris Rails client gem is deprecated. While it will continue to work you will experience signifiant performance improvements moving to v2. 
+Version 1 of the Wafris Rails client gem is deprecated. While it will continue to work you will experience signifiant performance improvements moving to v2.
 
 The v2 Client does not depend on a Redis instance and instead uses locally sync'd SQLite databases. If you are currently using your own Redis instance, it will continue to work, but we would recommend creating a new WAF instance on Hub and migrating your existing rules.
 
-Update by running `bundle update wafris` and then updating your configuration. 
+Update by running `bundle update wafris` and then updating your configuration.
 
 We recommend removing your existing `config/initializers/wafris.rb` file and instead setting the `WAFRIS_API_KEY` environment variable in your production environment.
 
