@@ -17,7 +17,7 @@ module Wafris
     end
 
     describe "#initialize" do
-      it "allows setting attributes with a block" do
+      it "attributes available to be set" do
         @config.api_key = "some_api_key"
         @config.db_file_path = "/some/path"
         @config.db_file_name = "wafris.db"
