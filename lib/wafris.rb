@@ -34,12 +34,18 @@ module Wafris
 
     def configure
       self.configuration ||= Wafris::Configuration.new
-      yield(configuration)
+      if block_given?
+        yield(configuration)
+        LogSuppressor.puts_log("Configuration settings created with configure block.")
+      else
+        LogSuppressor.puts_log("Configuration settings created with defaults and ENV vars.")
+      end
 
-      LogSuppressor.puts_log("[Wafris] Configuration settings created.")
-      configuration.create_settings
+      configuration.setup
+
+      return configuration
     rescue => e
-      puts "[Wafris] firewall disabled due to: #{e.message}. Cannot connect via Wafris.configure. Please check your configuration settings. More info can be found at: https://github.com/Wafris/wafris-rb"
+      LogSuppressor.puts_log("Firewall disabled due to: #{e.message}. Please check your configuration settings.")
     end
 
     def zero_pad(number, length)
@@ -432,7 +438,9 @@ module Wafris
     # This is the main loop that evaluates the request
     # as well as sorts out when downsync and upsync should be called
     def evaluate(request)
-      @configuration ||= Wafris::Configuration.new
+      if @configuration.nil?
+        configure
+      end
 
       return "Passed" if @configuration.api_key.nil?
 
