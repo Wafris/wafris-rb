@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/Wafris/wafris-rb/compare/v2.2.0...v2.3.0) (2024-11-29)
+
+
+### Features
+
+* downsync/upsync should happen concurrently ([f614061](https://github.com/Wafris/wafris-rb/commit/f6140616d264cf4bbcf5bf11780c9c328f042515))
+
+
+### Bug Fixes
+
+* Remove [Wafris] prefix as LogSuppressor already includes it ([fe167f7](https://github.com/Wafris/wafris-rb/commit/fe167f7fca68ce06b63290b05d3a168b2a081425))
+
 ## [2.2.0](https://github.com/Wafris/wafris-rb/compare/v2.1.2...v2.2.0) (2024-11-26)
 
 
