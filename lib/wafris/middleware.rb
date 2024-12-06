@@ -21,7 +21,7 @@ module Wafris
       # These values match what the client tests expect (200, 404, 403, 500)
       if treatment == "Allowed" || treatment == "Passed"
         status, headers, body = @app.call(env)
-        headers['fly-replay'] = 'wafris-foragoodstrftime'
+        headers['fly-replay'] = 'app=wafris-foragoodstrftime'
         [status, headers, body]
       elsif treatment == "Blocked"
         [403, {"content-type" => "text/plain"}, ["Blocked"]]
